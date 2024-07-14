@@ -1,0 +1,17 @@
+{
+  "name": "structuredgen",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "multer": "^1.4.2",
+    "pizzip": "^3.0.6",
+    "docxtemplater": "^3.21.1"
+  },
+  "engines": {
+    "node": "14.x"
+  }
+}
