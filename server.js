@@ -11,6 +11,7 @@ const port = process.env.PORT || 3000;
 
 // Enable CORS for all routes
 app.use(cors());
+app.use(express.json()); // Enable parsing JSON request bodies
 
 // Set up multer for file uploads
 const upload = multer({ dest: 'uploads/' });
