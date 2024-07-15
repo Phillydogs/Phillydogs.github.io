@@ -6,10 +6,11 @@
     "start": "node server.js"
   },
   "dependencies": {
+    "cors": "^2.8.5",
+    "docxtemplater": "^3.21.1",
     "express": "^4.17.1",
     "multer": "^1.4.2",
-    "pizzip": "^3.0.6",
-    "docxtemplater": "^3.21.1"
+    "pizzip": "^3.0.6"
   },
   "engines": {
     "node": "14.x"

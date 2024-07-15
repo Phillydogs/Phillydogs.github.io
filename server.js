@@ -4,17 +4,16 @@ const fs = require('fs');
 const path = require('path');
 const PizZip = require('pizzip');
 const Docxtemplater = require('docxtemplater');
+const cors = require('cors'); // Import the cors package
 
 const app = express();
 const port = process.env.PORT || 3000;
 
+// Enable CORS for all routes
+app.use(cors());
+
 // Set up multer for file uploads
 const upload = multer({ dest: 'uploads/' });
-
-// Serve the index.html file at the root URL
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
 
 // Helper function to replace placeholders in text
 function replacePlaceholders(text, placeholder, replacement) {
@@ -23,7 +22,7 @@ function replacePlaceholders(text, placeholder, replacement) {
 
 app.post('/upload', upload.single('template'), (req, res) => {
   const templatePath = req.file.path;
-  const underlierName = req.body.underliers;
+  const underlierName = req.body.underliers; // Updated to match the form field name
   const outputPath = path.join('uploads', 'output.docx');
 
   console.log(`Template path: ${templatePath}`);
@@ -64,9 +63,7 @@ app.post('/upload', upload.single('template'), (req, res) => {
         console.log('File downloaded successfully.');
         // Clean up: Delete the uploaded template file and output file
         fs.unlinkSync(templatePath);
-        // fs.unlinkSync(outputPath);
         console.log('Uploaded template file deleted.');
-        // console.log('Output file deleted.');
       }
     });
   } catch (error) {
