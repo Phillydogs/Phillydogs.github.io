@@ -18,7 +18,7 @@ function replacePlaceholders(text, placeholder, replacement) {
 
 app.post('/upload', upload.single('template'), (req, res) => {
   const templatePath = req.file.path;
-  const underlierName = req.body.underlier_name;
+  const underlierName = req.body.underliers;
   const outputPath = path.join('uploads', 'output.docx');
 
   console.log(`Template path: ${templatePath}`);
@@ -40,8 +40,7 @@ app.post('/upload', upload.single('template'), (req, res) => {
     // Replace placeholders with the provided underlier name
     const xml = zip.files['word/document.xml'].asText();
     const updatedXml = replacePlaceholders(xml, '[underlier]', underlierName);
-    const finalXml = replacePlaceholders(updatedXml, 'underlier_name', underlierName);
-    zip.file('word/document.xml', finalXml);
+    zip.file('word/document.xml', updatedXml);
     console.log('Placeholders replaced successfully.');
 
     // Get the rendered document buffer
