@@ -11,6 +11,11 @@ const port = process.env.PORT || 3000;
 // Set up multer for file uploads
 const upload = multer({ dest: 'uploads/' });
 
+// Serve the index.html file at the root URL
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
 // Helper function to replace placeholders in text
 function replacePlaceholders(text, placeholder, replacement) {
   return text.split(placeholder).join(replacement);
