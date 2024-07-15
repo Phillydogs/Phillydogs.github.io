@@ -4,15 +4,9 @@ const fs = require('fs');
 const path = require('path');
 const PizZip = require('pizzip');
 const Docxtemplater = require('docxtemplater');
-const cors = require('cors');
 
 const app = express();
-const port = process.env.PORT || 3000; // Use the port provided by the hosting service
-
-// Allow CORS from your HTML file's domain
-app.use(cors({
-    origin: 'https://phillydogs.github.io/'
-}));
+const port = process.env.PORT || 3000;
 
 // Set up multer for file uploads
 const upload = multer({ dest: 'uploads/' });
@@ -24,7 +18,7 @@ function replacePlaceholders(text, placeholder, replacement) {
 
 app.post('/upload', upload.single('template'), (req, res) => {
   const templatePath = req.file.path;
-  const underlierName = req.body.underliers;
+  const underlierName = req.body.underlier_name;
   const outputPath = path.join('uploads', 'output.docx');
 
   console.log(`Template path: ${templatePath}`);
@@ -46,7 +40,8 @@ app.post('/upload', upload.single('template'), (req, res) => {
     // Replace placeholders with the provided underlier name
     const xml = zip.files['word/document.xml'].asText();
     const updatedXml = replacePlaceholders(xml, '[underlier]', underlierName);
-    zip.file('word/document.xml', updatedXml);
+    const finalXml = replacePlaceholders(updatedXml, 'underlier_name', underlierName);
+    zip.file('word/document.xml', finalXml);
     console.log('Placeholders replaced successfully.');
 
     // Get the rendered document buffer
