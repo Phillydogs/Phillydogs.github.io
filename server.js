@@ -4,14 +4,12 @@ const fs = require('fs');
 const path = require('path');
 const PizZip = require('pizzip');
 const Docxtemplater = require('docxtemplater');
-const cors = require('cors'); // Import the cors package
+const cors = require('cors');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Enable CORS for all routes
 app.use(cors());
-app.use(express.json()); // Enable parsing JSON request bodies
 
 // Set up multer for file uploads
 const upload = multer({ dest: 'uploads/' });
@@ -23,7 +21,7 @@ function replacePlaceholders(text, placeholder, replacement) {
 
 app.post('/upload', upload.single('template'), (req, res) => {
   const templatePath = req.file.path;
-  const underlierName = req.body.underliers; // Updated to match the form field name
+  const underlierName = req.body.underliers; // Make sure this matches the form field name
   const outputPath = path.join('uploads', 'output.docx');
 
   console.log(`Template path: ${templatePath}`);
@@ -62,9 +60,8 @@ app.post('/upload', upload.single('template'), (req, res) => {
         res.status(500).send('Error downloading the file.');
       } else {
         console.log('File downloaded successfully.');
-        // Clean up: Delete the uploaded template file and output file
+        // Clean up: Delete the uploaded template file
         fs.unlinkSync(templatePath);
-        console.log('Uploaded template file deleted.');
       }
     });
   } catch (error) {
