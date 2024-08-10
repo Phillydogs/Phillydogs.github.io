@@ -5,11 +5,12 @@ const path = require('path');
 const PizZip = require('pizzip');
 const Docxtemplater = require('docxtemplater');
 const cors = require('cors');
+const { format } = require('date-fns'); // Import date-fns for date formatting
 
-const app = express(); // Ensure 'app' is initialized here
+const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(cors()); // Use 'app' after initialization
+app.use(cors());
 
 // Set up multer for file uploads
 const upload = multer({ dest: 'uploads/' });
@@ -27,6 +28,10 @@ app.post('/upload', upload.single('template'), (req, res) => {
   console.log(`Template path: ${templatePath}`);
   console.log(`Underlier name: ${underlierName}`);
 
+  // Get today's date in the desired format
+  const currentDate = format(new Date(), 'MMMM d, yyyy'); // Example: January 1, 2024
+  console.log(`Today's date: ${currentDate}`);
+
   try {
     // Read the template file
     const templateBuffer = fs.readFileSync(templatePath);
@@ -40,10 +45,11 @@ app.post('/upload', upload.single('template'), (req, res) => {
     });
     console.log('Template document loaded successfully.');
 
-    // Replace placeholders with the provided underlier name
-    const xml = zip.files['word/document.xml'].asText();
-    const updatedXml = replacePlaceholders(xml, '[underlier]', underlierName);
-    zip.file('word/document.xml', updatedXml);
+    // Replace placeholders with the provided underlier name and current date
+    let xml = zip.files['word/document.xml'].asText();
+    xml = replacePlaceholders(xml, '[underlier]', underlierName);
+    xml = replacePlaceholders(xml, '[doc_date]', currentDate);
+    zip.file('word/document.xml', xml);
     console.log('Placeholders replaced successfully.');
 
     // Get the rendered document buffer
