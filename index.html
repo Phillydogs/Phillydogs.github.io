@@ -81,6 +81,19 @@
                 notionalInput.value = value;
             });
 
+            const downsideThresholdInput = document.getElementById('downside-threshold');
+            downsideThresholdInput.addEventListener('blur', function() {
+                const value = parseFloat(downsideThresholdInput.value);
+                if (!isNaN(value)) {
+                    downsideThresholdInput.value = value.toLocaleString('en-US', { style: 'percent', minimumFractionDigits: 2 });
+                }
+            });
+
+            downsideThresholdInput.addEventListener('focus', function() {
+                const value = downsideThresholdInput.value.replace(/[%]/g, '');
+                downsideThresholdInput.value = value;
+            });
+
             document.getElementById('document-form').addEventListener('submit', async function(e) {
                 e.preventDefault();
                 const formData = new FormData(this);
