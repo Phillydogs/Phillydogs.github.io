@@ -5,6 +5,11 @@ const path = require('path');
 const PizZip = require('pizzip');
 const Docxtemplater = require('docxtemplater');
 const cors = require('cors');
+const corsOptions = {
+  origin: 'https://phillydogs.github.io',
+  optionsSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
 
 const app = express();
 const port = process.env.PORT || 3000;
