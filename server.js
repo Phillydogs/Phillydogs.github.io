@@ -19,6 +19,11 @@ function replacePlaceholders(text, placeholder, replacement) {
   return text.split(placeholder).join(replacement);
 }
 
+// Serve the index.html file at the root path
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
 app.post('/upload', upload.single('template'), (req, res) => {
   const templatePath = req.file.path;
   const underlierName = req.body.underliers; // Make sure this matches the form field name
