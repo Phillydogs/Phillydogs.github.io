@@ -5,16 +5,11 @@ const path = require('path');
 const PizZip = require('pizzip');
 const Docxtemplater = require('docxtemplater');
 const cors = require('cors');
-const corsOptions = {
-  origin: 'https://phillydogs.github.io',
-  optionsSuccessStatus: 200,
-};
-app.use(cors(corsOptions));
 
-const app = express();
+const app = express(); // Ensure 'app' is initialized here
 const port = process.env.PORT || 3000;
 
-app.use(cors());
+app.use(cors()); // Use 'app' after initialization
 
 // Set up multer for file uploads
 const upload = multer({ dest: 'uploads/' });
@@ -23,11 +18,6 @@ const upload = multer({ dest: 'uploads/' });
 function replacePlaceholders(text, placeholder, replacement) {
   return text.split(placeholder).join(replacement);
 }
-
-// Serve the index.html file at the root path
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
 
 app.post('/upload', upload.single('template'), (req, res) => {
   const templatePath = req.file.path;
