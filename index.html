@@ -83,14 +83,15 @@
 
             const downsideThresholdInput = document.getElementById('downside-threshold');
             downsideThresholdInput.addEventListener('blur', function() {
-                const value = parseFloat(downsideThresholdInput.value);
+                let value = parseFloat(downsideThresholdInput.value);
                 if (!isNaN(value)) {
-                    downsideThresholdInput.value = value.toLocaleString('en-US', { style: 'percent', minimumFractionDigits: 2 });
+                    value = value / 100; // Convert from percentage to decimal
+                    downsideThresholdInput.value = (value * 100).toFixed(2) + '%';
                 }
             });
 
             downsideThresholdInput.addEventListener('focus', function() {
-                const value = downsideThresholdInput.value.replace(/[%]/g, '');
+                let value = downsideThresholdInput.value.replace(/[%]/g, '');
                 downsideThresholdInput.value = value;
             });
 
