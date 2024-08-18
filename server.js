@@ -5,7 +5,6 @@ const path = require('path');
 const PizZip = require('pizzip');
 const Docxtemplater = require('docxtemplater');
 const cors = require('cors');
-const { format } = require('date-fns'); // Import date-fns for date formatting
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -20,17 +19,23 @@ function replacePlaceholders(text, placeholder, replacement) {
   return text.split(placeholder).join(replacement);
 }
 
+// Helper function to format the date as "Month Day, Year"
+function formatDate(date) {
+  const options = { year: 'numeric', month: 'long', day: 'numeric' };
+  return date.toLocaleDateString('en-US', options);
+}
+
 app.post('/upload', upload.single('template'), (req, res) => {
   const templatePath = req.file.path;
-  const underlierName = req.body.underliers; // Make sure this matches the form field name
+  const underlierName = req.body.underlier_name; // Get the underlier name from the form
+  const downsideThreshold = req.body.downside_threshold; // Get the downside threshold from the form
+  const currentDate = formatDate(new Date()); // Get today's date in the desired format
   const outputPath = path.join('uploads', 'output.docx');
 
   console.log(`Template path: ${templatePath}`);
   console.log(`Underlier name: ${underlierName}`);
-
-  // Get today's date in the desired format
-  const currentDate = format(new Date(), 'MMMM d, yyyy'); // Example: January 1, 2024
-  console.log(`Today's date: ${currentDate}`);
+  console.log(`Downside Threshold: ${downsideThreshold}`);
+  console.log(`Current Date: ${currentDate}`);
 
   try {
     // Read the template file
@@ -45,10 +50,13 @@ app.post('/upload', upload.single('template'), (req, res) => {
     });
     console.log('Template document loaded successfully.');
 
-    // Replace placeholders with the provided underlier name and current date
+    // Replace placeholders
     let xml = zip.files['word/document.xml'].asText();
     xml = replacePlaceholders(xml, '[underlier]', underlierName);
+    xml = replacePlaceholders(xml, '[downside_threshold]', downsideThreshold);
     xml = replacePlaceholders(xml, '[doc_date]', currentDate);
+
+    // Update the document with the replaced text
     zip.file('word/document.xml', xml);
     console.log('Placeholders replaced successfully.');
 

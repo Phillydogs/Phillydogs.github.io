@@ -96,6 +96,16 @@
                 downsideThresholdInput.value = value;
             });
 
+            // Automatically fill [doc_date] with today's date in "Month Day, Year" format
+            const today = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            const formattedDate = today.toLocaleDateString('en-US', options);
+            const docDateHidden = document.createElement('input');
+            docDateHidden.type = 'hidden';
+            docDateHidden.name = 'doc-date';
+            docDateHidden.value = formattedDate;
+            document.getElementById('document-form').appendChild(docDateHidden);
+
             document.getElementById('document-form').addEventListener('submit', async function(e) {
                 e.preventDefault();
                 const formData = new FormData(this);
