@@ -33,6 +33,9 @@ app.post('/upload', upload.single('template'), (req, res) => {
   console.log(`Underlier name: ${underlierName}`);
   console.log(`Downside Threshold: ${downsideThreshold}`);
   console.log(`Current Date: ${currentDate}`);
+  console.log(xml.includes('[downside_threshold]'));  // Should return true
+  console.log(xml.includes('[doc_date]'));  // Should return true
+
 
   try {
     // Read the template file
