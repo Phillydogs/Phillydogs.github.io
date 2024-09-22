@@ -92,8 +92,8 @@
             });
 
             downsideThresholdInput.addEventListener('focus', function() {
-                let value = downsideThresholdHidden.value; // Retrieve the stored numeric value
-                downsideThresholdInput.value = value;
+                let value = downsideThresholdHidden.value || ''; // Retrieve the stored numeric value
+                downsideThresholdInput.value = value; // Remove formatting when focused
             });
 
             // Automatically fill [doc_date] with today's date in "Month Day, Year" format
@@ -126,6 +126,7 @@
                     window.URL.revokeObjectURL(url);
                     alert('Your file has been generated!');
                 } else {
+                    console.error('Error:', response.statusText); // Log the error for debugging
                     alert('An error occurred while generating the document.');
                 }
             });
@@ -153,8 +154,8 @@
                 <input type="date" id="maturity-date" name="maturity-date" required>
             </div>
             <div class="input-group">
-                <label for="underliers">Underliers:</label>
-                <select id="underliers" name="underliers" required>
+                <label for="underlier_name">Underlier Name:</label>
+                <select id="underlier_name" name="underlier_name" required>
                     <option value="Nasdaq-100 Index®">Nasdaq-100 Index®</option>
                     <option value="S&P 500">S&P 500</option>
                     <option value="Dow Jones Industrial Average">Dow Jones Industrial Average</option>
