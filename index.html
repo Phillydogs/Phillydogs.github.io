@@ -80,8 +80,8 @@
                 notionalInput.value = value;
             });
 
-            const downsideThresholdInput = document.getElementById('downside-threshold');
-            const downsideThresholdHidden = document.getElementById('downside-threshold-hidden');
+            const downsideThresholdInput = document.getElementById('downside_threshold');
+            const downsideThresholdHidden = document.getElementById('downside_threshold-hidden');
 
             downsideThresholdInput.addEventListener('blur', function() {
                 let value = parseFloat(downsideThresholdInput.value);
@@ -157,7 +157,7 @@
                 <label for="underlier_name">Underlier Name:</label>
                 <select id="underlier_name" name="underlier_name" required>
                     <option value="Nasdaq-100 Index®">Nasdaq-100 Index®</option>
-                    <option value="S&P 500">S&P 500</option>
+                    <option value="AAPL">Common Stock of Apple Inc.</option>
                     <option value="Dow Jones Industrial Average">Dow Jones Industrial Average</option>
                 </select>
             </div>
@@ -169,9 +169,9 @@
                 </select>
             </div>
             <div class="input-group">
-                <label for="downside-threshold">Downside Threshold:</label>
-                <input type="text" id="downside-threshold" required>
-                <input type="hidden" id="downside-threshold-hidden" name="downside-threshold">
+                <label for="downside_threshold">Downside Threshold:</label>
+                <input type="text" id="downside_threshold" required>
+                <input type="hidden" id="downside_threshold-hidden" name="downside_threshold">
             </div>
             <div class="input-group">
                 <label for="notional">Notional:</label>
