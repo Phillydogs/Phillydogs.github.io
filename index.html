@@ -69,7 +69,7 @@
         /* Styling for toggle switch */
         .toggle-container {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
             width: 100%;
@@ -77,7 +77,6 @@
 
         .toggle-label {
             font-size: 16px;
-            margin-right: 10px;
             color: #555;
         }
 
@@ -193,25 +192,26 @@
 
             const toggleSwitch = document.getElementById("view-toggle");
             toggleSwitch.addEventListener("change", function() {
-                const state = this.checked ? "Map view" : "List view";
+                const state = this.checked ? "Final" : "Prelim";
                 console.log("Selected state: ", state);
             });
         });
     </script>
 </head>
 <body>
-    <!-- Toggle switch to choose between List View and Map View -->
-    <div class="toggle-container">
-        <label class="toggle-label" for="view-toggle">View:</label>
-        <label class="switch">
-            <input type="checkbox" id="view-toggle">
-            <span class="slider"></span>
-        </label>
-        <span id="view-state">List view</span>
-    </div>
-
     <div class="container">
         <h1>Legal Document Generator</h1>
+
+        <!-- Toggle switch below the heading -->
+        <div class="toggle-container">
+            <span class="toggle-label">Prelim</span>
+            <label class="switch">
+                <input type="checkbox" id="view-toggle">
+                <span class="slider"></span>
+            </label>
+            <span class="toggle-label">Final</span>
+        </div>
+
         <form id="document-form" enctype="multipart/form-data">
             <div class="input-group">
                 <label for="issuer">Issuer:</label>
