@@ -23,25 +23,21 @@ function replacePlaceholders(text, placeholder, replacement) {
 
 app.post('/generate', (req, res) => {
     const { issuer, tradeDate, maturityDate, underlierName, downside, downsideThreshold, notional } = req.body;
-    const currentDate = moment().format('MMMM D, YYYY'); // Current date formatted
-    const outputPath = path.join('uploads', 'output.docx');
+    const currentDate = moment().format('MMMM D, YYYY');
 
     try {
-        // Read the stored template file
+        // Ensure template exists
+        if (!fs.existsSync(templatePath)) {
+            throw new Error("Template file not found.");
+        }
+
         const templateBuffer = fs.readFileSync(templatePath);
-        console.log('Template buffer read successfully.');
-
-        // Load the DOCX file as a binary
         const zip = new PizZip(templateBuffer);
-        const doc = new Docxtemplater(zip, {
-            paragraphLoop: true,
-            linebreaks: true,
-        });
+        const doc = new Docxtemplater(zip, { paragraphLoop: true, linebreaks: true });
 
-        // Extract the document XML content
         let xml = zip.files['word/document.xml'].asText();
 
-        // Replace placeholders with the provided values
+        // Replace placeholders with values
         xml = replacePlaceholders(xml, '[issuer]', issuer);
         xml = replacePlaceholders(xml, '[trade_date]', tradeDate);
         xml = replacePlaceholders(xml, '[maturity_date]', maturityDate);
@@ -53,24 +49,19 @@ app.post('/generate', (req, res) => {
 
         zip.file('word/document.xml', xml);
 
-        // Generate the new DOCX file with the updated values
+        // Generate the file in memory
         const buf = zip.generate({ type: 'nodebuffer' });
 
-        // Save the updated document
-        fs.writeFileSync(outputPath, buf);
+        // Set headers for the download
+        res.setHeader('Content-Disposition', 'attachment; filename=output.docx');
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
 
-        // Send the updated document as a download
-        res.download(outputPath, 'output.docx', (err) => {
-            if (err) {
-                console.error('Error downloading the file:', err);
-                res.status(500).send('Error downloading the file.');
-            } else {
-                console.log('File downloaded successfully.');
-            }
-        });
+        // Send the generated file as a response
+        res.send(buf);
+
     } catch (error) {
-        console.error('Error processing the document:', error);
-        res.status(500).send('Error processing the document.');
+        console.error("Error processing document:", error);
+        res.status(500).json({ error: error.message });
     }
 });
 
