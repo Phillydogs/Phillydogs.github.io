@@ -66,18 +66,64 @@
             text-decoration: underline;
         }
 
-        /* Styling the slider container */
-        .slider-container {
+        /* Styling for toggle switch */
+        .toggle-container {
             display: flex;
             justify-content: center;
+            align-items: center;
             margin-bottom: 20px;
             width: 100%;
         }
 
-        .slider-label {
-            margin-right: 10px;
+        .toggle-label {
             font-size: 16px;
+            margin-right: 10px;
             color: #555;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            border-radius: 50%;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.4s;
+        }
+
+        input:checked + .slider {
+            background-color: #4CAF50;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
         }
     </style>
     <script>
@@ -145,23 +191,23 @@
                 }
             });
 
-            const slider = document.getElementById("state-slider");
-            const sliderValue = document.getElementById("slider-value");
-
-            slider.addEventListener("change", function() {
-                const state = this.value;
-                sliderValue.textContent = state === "1" ? "Prelim" : "Final";
-                console.log("Selected state: ", state === "1" ? "Prelim" : "Final");
+            const toggleSwitch = document.getElementById("view-toggle");
+            toggleSwitch.addEventListener("change", function() {
+                const state = this.checked ? "Map view" : "List view";
+                console.log("Selected state: ", state);
             });
         });
     </script>
 </head>
 <body>
-    <!-- Slider to toggle between Prelim and Final -->
-    <div class="slider-container">
-        <label class="slider-label" for="state-slider">Select State:</label>
-        <input type="range" id="state-slider" name="state" min="1" max="2" value="1">
-        <span id="slider-value">Prelim</span>
+    <!-- Toggle switch to choose between List View and Map View -->
+    <div class="toggle-container">
+        <label class="toggle-label" for="view-toggle">View:</label>
+        <label class="switch">
+            <input type="checkbox" id="view-toggle">
+            <span class="slider"></span>
+        </label>
+        <span id="view-state">List view</span>
     </div>
 
     <div class="container">
