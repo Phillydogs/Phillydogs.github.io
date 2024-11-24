@@ -13,6 +13,7 @@
             align-items: center;
             height: 100vh;
             margin: 0;
+            flex-direction: column;
         }
         .container {
             background: white;
@@ -64,6 +65,20 @@
         a:hover {
             text-decoration: underline;
         }
+
+        /* Styling the slider container */
+        .slider-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .slider-label {
+            margin-right: 10px;
+            font-size: 16px;
+            color: #555;
+        }
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -86,17 +101,16 @@
             downsideThresholdInput.addEventListener('blur', function() {
                 let value = parseFloat(downsideThresholdInput.value);
                 if (!isNaN(value)) {
-                    downsideThresholdHidden.value = value; // Store the numeric value in the hidden input
-                    downsideThresholdInput.value = value.toFixed(2) + '%'; // Show formatted percentage in visible input
+                    downsideThresholdHidden.value = value;
+                    downsideThresholdInput.value = value.toFixed(2) + '%';
                 }
             });
 
             downsideThresholdInput.addEventListener('focus', function() {
-                let value = downsideThresholdHidden.value || ''; // Retrieve the stored numeric value
-                downsideThresholdInput.value = value; // Remove formatting when focused
+                let value = downsideThresholdHidden.value || '';
+                downsideThresholdInput.value = value;
             });
 
-            // Automatically fill [doc_date] with today's date in "Month Day, Year" format
             const today = new Date();
             const options = { year: 'numeric', month: 'long', day: 'numeric' };
             const formattedDate = today.toLocaleDateString('en-US', options);
@@ -126,14 +140,30 @@
                     window.URL.revokeObjectURL(url);
                     alert('Your file has been generated!');
                 } else {
-                    console.error('Error:', response.statusText); // Log the error for debugging
+                    console.error('Error:', response.statusText);
                     alert('An error occurred while generating the document.');
                 }
+            });
+
+            const slider = document.getElementById("state-slider");
+            const sliderValue = document.getElementById("slider-value");
+
+            slider.addEventListener("change", function() {
+                const state = this.value;
+                sliderValue.textContent = state === "1" ? "Prelim" : "Final";
+                console.log("Selected state: ", state === "1" ? "Prelim" : "Final");
             });
         });
     </script>
 </head>
 <body>
+    <!-- Slider to toggle between Prelim and Final -->
+    <div class="slider-container">
+        <label class="slider-label" for="state-slider">Select State:</label>
+        <input type="range" id="state-slider" name="state" min="1" max="2" value="1">
+        <span id="slider-value">Prelim</span>
+    </div>
+
     <div class="container">
         <h1>Legal Document Generator</h1>
         <form id="document-form" enctype="multipart/form-data">
