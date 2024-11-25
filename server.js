@@ -31,6 +31,8 @@ app.post('/generate', (req, res) => {
     const { issuer, tradeDate, maturityDate, underlierName, downside, downsideThreshold, notional } = req.body;
     const currentDate = moment().format('MMMM D, YYYY');
 
+    console.log("Data received on server:", req.body);  // Debugging line
+
     try {
         // Ensure template exists
         if (!fs.existsSync(templatePath)) {
@@ -53,7 +55,7 @@ app.post('/generate', (req, res) => {
             '[doc_date]': currentDate
         };
 
-        console.log("Data being passed to Docxtemplater:", data); // Debugging data
+        console.log("Data passed to Docxtemplater:", data);  // Debugging line
         
         // Replace the placeholders with the provided data (removing the brackets)
         replacePlaceholders(doc, data);

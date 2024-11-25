@@ -65,8 +65,7 @@
         a:hover {
             text-decoration: underline;
         }
-
-        /* Styling for toggle switch */
+                /* Styling for toggle switch */
         .toggle-container {
             display: flex;
             justify-content: space-between;
@@ -168,6 +167,12 @@
             document.getElementById('document-form').addEventListener('submit', async function(e) {
                 e.preventDefault();
                 const formData = new FormData(this);
+
+                // Log the form data to verify it's correct
+                for (let [key, value] of formData.entries()) {
+                    console.log(key, value);  // Log form data for debugging
+                }
+
                 const response = await fetch('https://structuredgen-2d4826d917be.herokuapp.com/generate', {
                     method: 'POST',
                     body: formData
