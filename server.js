@@ -17,8 +17,13 @@ app.use(express.urlencoded({ extended: true }));
 const templatePath = path.join(__dirname, 'templates', 'template.docx'); // Change this to your template file path
 
 // Helper function to replace placeholders in text
-function replacePlaceholders(text, placeholder, replacement) {
-    return text.split(placeholder).join(replacement);
+function replacePlaceholders(doc, data) {
+    // Remove brackets from the placeholder names
+    const formattedData = {};
+    Object.keys(data).forEach(key => {
+        formattedData[key.replace(/[\[\]]/g, '')] = data[key]; // Remove [ and ]
+    });
+    doc.setData(formattedData);  // Set the data for Docxtemplater to replace placeholders
 }
 
 app.post('/generate', (req, res) => {
@@ -35,22 +40,23 @@ app.post('/generate', (req, res) => {
         const zip = new PizZip(templateBuffer);
         const doc = new Docxtemplater(zip, { paragraphLoop: true, linebreaks: true });
 
-        let xml = zip.files['word/document.xml'].asText();
+        // Prepare data to replace the placeholders in the template
+        const data = {
+            '[issuer]': issuer,
+            '[trade_date]': tradeDate,
+            '[maturity_date]': maturityDate,
+            '[underlier_name]': underlierName,
+            '[downside]': downside,
+            '[downside_threshold]': downsideThreshold,
+            '[notional]': notional,
+            '[doc_date]': currentDate
+        };
 
-        // Replace placeholders with values
-        xml = replacePlaceholders(xml, '[issuer]', issuer);
-        xml = replacePlaceholders(xml, '[trade_date]', tradeDate);
-        xml = replacePlaceholders(xml, '[maturity_date]', maturityDate);
-        xml = replacePlaceholders(xml, '[underlier_name]', underlierName);
-        xml = replacePlaceholders(xml, '[downside]', downside);
-        xml = replacePlaceholders(xml, '[downside_threshold]', downsideThreshold);
-        xml = replacePlaceholders(xml, '[notional]', notional);
-        xml = replacePlaceholders(xml, '[doc_date]', currentDate);
-
-        zip.file('word/document.xml', xml);
+        // Replace the placeholders with the provided data (removing the brackets)
+        replacePlaceholders(doc, data);
 
         // Generate the file in memory
-        const buf = zip.generate({ type: 'nodebuffer' });
+        const buf = doc.getZip().generate({ type: 'nodebuffer' });
 
         // Set headers for the download
         res.setHeader('Content-Disposition', 'attachment; filename=output.docx');
