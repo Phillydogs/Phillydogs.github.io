@@ -14,7 +14,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Stored template file path
-const templatePath = path.join(__dirname, 'templates', 'template.docx'); // Change this to your template file path
+const templatePath = path.join(__dirname, 'templates', 'template');  // Without .docx
 
 // Helper function to replace placeholders in text
 function replacePlaceholders(doc, data) {
