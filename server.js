@@ -3,11 +3,16 @@ const fs = require('fs');
 const path = require('path');
 const PizZip = require('pizzip');
 const Docxtemplater = require('docxtemplater');
+const multer = require('multer');  // Import multer
 const cors = require('cors');
 const moment = require('moment');
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+// Multer setup to handle form data (without file upload)
+const storage = multer.memoryStorage();  // We store the data in memory
+const upload = multer({ storage: storage });  // Add multer middleware here
 
 app.use(cors());
 app.use(express.json());
@@ -18,7 +23,6 @@ const templatePath = path.join(__dirname, 'templates', 'template.docx'); // Chan
 
 // Helper function to replace placeholders in text
 function replacePlaceholders(doc, data) {
-    // Remove brackets from the placeholder names
     const formattedData = {};
     Object.keys(data).forEach(key => {
         formattedData[key.replace(/[\[\]]/g, '')] = data[key]; // Remove [ and ]
@@ -27,11 +31,13 @@ function replacePlaceholders(doc, data) {
     doc.setData(formattedData);  // Set the data for Docxtemplater to replace placeholders
 }
 
-app.post('/generate', (req, res) => {
+// Handle form submission and document generation
+app.post('/generate', upload.none(), (req, res) => {
+    // Check if we are receiving data in the body correctly
+    console.log("Data received on server:", req.body);  // Debugging line
+
     const { issuer, tradeDate, maturityDate, underlierName, downside, downsideThreshold, notional } = req.body;
     const currentDate = moment().format('MMMM D, YYYY');
-
-    console.log("Data received on server:", req.body);  // Debugging line
 
     try {
         // Ensure template exists
