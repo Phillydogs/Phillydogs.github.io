@@ -23,6 +23,7 @@ function replacePlaceholders(doc, data) {
     Object.keys(data).forEach(key => {
         formattedData[key.replace(/[\[\]]/g, '')] = data[key]; // Remove [ and ]
     });
+    console.log("Formatted Data for Docxtemplater:", formattedData);  // Debugging data
     doc.setData(formattedData);  // Set the data for Docxtemplater to replace placeholders
 }
 
@@ -52,6 +53,8 @@ app.post('/generate', (req, res) => {
             '[doc_date]': currentDate
         };
 
+        console.log("Data being passed to Docxtemplater:", data); // Debugging data
+        
         // Replace the placeholders with the provided data (removing the brackets)
         replacePlaceholders(doc, data);
 
