@@ -5,18 +5,15 @@ const PizZip = require('pizzip');
 const Docxtemplater = require('docxtemplater');
 const { Delimiters } = require('docxtemplater-expressions');
 const cors = require('cors');
+const moment = require('moment');
 const multer = require('multer');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-// CORS Configuration
-const corsOptions = {
-    origin: 'https://phillydogs.github.io', // Replace with your allowed origin
-    methods: ['GET', 'POST'], // Allowed HTTP methods
-    allowedHeaders: ['Content-Type'], // Allowed headers
-};
-app.use(cors(corsOptions)); // Apply CORS middleware
+app.use(cors({ origin: 'https://phillydogs.github.io' })); // Allow only GitHub Pages domain
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Body Parsers
 app.use(express.json());
