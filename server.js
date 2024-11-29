@@ -6,14 +6,13 @@ const Docxtemplater = require('docxtemplater');
 const cors = require('cors');  // Importing cors package
 const moment = require('moment');
 const multer = require('multer');
-const cors = require('cors');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 // Enable CORS for specific domains
 app.use(cors({
-    origin: 'https://phillydogs.github.io'  // Only allow your GitHub Pages domain
+    origin: 'https://phillydogs.github.io'  // Allow only your GitHub Pages domain
 }));
 
 // Alternatively, allow multiple specific domains
