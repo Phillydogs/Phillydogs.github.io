@@ -10,76 +10,54 @@ const multer = require('multer');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Enable CORS for specific domains
-app.use(cors({
-    origin: 'https://phillydogs.github.io'  // Allow only your GitHub Pages domain
-}));
-
-// Multer setup to handle form data (without file upload)
-const storage = multer.memoryStorage();  // Store the data in memory
-const upload = multer({ storage: storage });  // Add multer middleware here
-
+app.use(cors({ origin: 'https://phillydogs.github.io' })); // Allow only GitHub Pages domain
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Path to the template file
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
 const templatePath = path.join(__dirname, 'templates', 'template.docx');
 
-// Function to set data for Docxtemplater
+// Function to replace placeholders in the Word document
 function replacePlaceholders(doc, data) {
-    console.log("Formatted Data for Docxtemplater:", data);  // Debugging
-    doc.setData(data);  // Set the data for Docxtemplater to replace placeholders
+    console.log("Formatted Data for Docxtemplater:", data); // Log data for debugging
+    doc.setData(data); // Pass data to Docxtemplater
 }
 
 app.post('/generate', upload.none(), (req, res) => {
-    // Form data from the request
-    const {
-        issuer,
-        tradeDate,
-        maturityDate,
-        underlierName,
-        downside,
-        downsideThreshold,
-        notional
-    } = req.body;
-
+    const { issuer, tradeDate, maturityDate, underlierName, downside, downsideThreshold, notional } = req.body;
     const currentDate = moment().format('MMMM D, YYYY');
 
-    // Prepare data for placeholder replacement
     const data = {
         '[issuer]': issuer,
         '[trade_date]': tradeDate,
         '[maturity_date]': maturityDate,
-        '[underlier]': underlierName, // Corrected to match the template's placeholder
+        '[underlier]': underlierName,
         '[downside]': downside,
         '[downside_threshold]': downsideThreshold,
         '[notional]': notional,
         '[doc_date]': currentDate
     };
 
-    console.log("Data passed to Docxtemplater:", data);  // Debugging
+    console.log("Data passed to Docxtemplater:", data); // Debugging log
 
     try {
-        // Ensure the template exists
         if (!fs.existsSync(templatePath)) {
             throw new Error("Template file not found.");
         }
 
-        const templateBuffer = fs.readFileSync(templatePath);  // Read the template file
-        const zip = new PizZip(templateBuffer);  // Load the file into PizZip
+        const templateBuffer = fs.readFileSync(templatePath);
+        const zip = new PizZip(templateBuffer);
         const doc = new Docxtemplater(zip, { paragraphLoop: true, linebreaks: true });
 
-        // Replace placeholders
         replacePlaceholders(doc, data);
 
-        // Generate the document in memory
-        const buf = doc.getZip().generate({ type: 'nodebuffer' });
+        doc.render(); // Perform placeholder replacement
 
-        // Set headers for download
+        const buf = doc.getZip().generate({ type: 'nodebuffer' });
         res.setHeader('Content-Disposition', 'attachment; filename=output.docx');
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
-
-        // Send the generated document
         res.send(buf);
 
     } catch (error) {
