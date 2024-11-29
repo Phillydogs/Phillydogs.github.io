@@ -1,36 +1,47 @@
+const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const PizZip = require('pizzip');
 const Docxtemplater = require('docxtemplater');
+const cors = require('cors');  // Importing cors package
 const moment = require('moment');
 const multer = require('multer');
 const cors = require('cors');
 
-const app = require('express')();
-const port = 3000;
+const app = express();
+const port = process.env.PORT || 3000;
 
-// Set up multer
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+// Enable CORS for specific domains
+app.use(cors({
+    origin: 'https://phillydogs.github.io'  // Only allow your GitHub Pages domain
+}));
 
-// Allow CORS for all domains
-app.use(cors());
+// Alternatively, allow multiple specific domains
+// app.use(cors({
+//     origin: ['https://phillydogs.github.io', 'https://anotherdomain.com']
+// }));
+
+// Multer setup to handle form data (without file upload)
+const storage = multer.memoryStorage();  // We store the data in memory
+const upload = multer({ storage: storage });  // Add multer middleware here
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Template file path
-const templatePath = path.join(__dirname, 'templates', 'template.docx'); // Your template path
+// Stored template file path
+const templatePath = path.join(__dirname, 'templates', 'template.docx'); // Change this to your template file path
 
+// Helper function to replace placeholders in text
 function replacePlaceholders(doc, data) {
-    // Clean data and replace placeholders
     const formattedData = {};
     Object.keys(data).forEach((key) => {
         formattedData[key.replace(/[\[\]]/g, '')] = data[key]; // Removing brackets from placeholder names
     });
-    console.log("Formatted Data for Docxtemplater:", formattedData);
-    doc.setData(formattedData); // Set the data in Docxtemplater to replace placeholders
+    console.log("Formatted Data for Docxtemplater:", formattedData);  // Debugging data
+    doc.setData(formattedData);  // Set the data for Docxtemplater to replace placeholders
 }
 
+// Handle form submission and document generation
 app.post('/generate', upload.none(), (req, res) => {
     // Get data from form
     const { issuer, tradeDate, maturityDate, underlierName, downside, downsideThreshold, notional } = req.body;
