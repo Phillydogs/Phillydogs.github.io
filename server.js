@@ -10,7 +10,7 @@ const multer = require('multer');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Allow all origins temporarily
+// Allow all origins temporarily for troubleshooting
 app.use(cors());
 
 // Body Parsers
@@ -24,7 +24,7 @@ const upload = multer({ storage: storage });
 // Template Path
 const templatePath = path.join(__dirname, 'templates', 'template.docx');
 
-// Configure Docxtemplater to Recognize Square Brackets
+// Configure Docxtemplater to Recognize Curly Braces
 function customParser(tag) {
     return {
         get: tag === '.' ? function (s) { return s; } : function (s) { return require('angular-expressions').compile(tag)(s); }
@@ -50,14 +50,14 @@ app.post('/generate', upload.none(), (req, res) => {
 
     // Data for Placeholder Replacement
     const data = {
-        '[issuer]': issuer,
-        '[trade_date]': tradeDate,
-        '[maturity_date]': maturityDate,
-        '[underlier]': underlierName,
-        '[downside]': downside,
-        '[downside_threshold]': downsideThreshold,
-        '[notional]': notional,
-        '[doc_date]': currentDate
+        issuer,
+        tradeDate,
+        maturityDate,
+        underlierName,
+        downside,
+        downsideThreshold,
+        notional,
+        doc_date: currentDate
     };
 
     console.log("Data passed to Docxtemplater:", data); // Debugging log
@@ -67,7 +67,7 @@ app.post('/generate', upload.none(), (req, res) => {
         const zip = new PizZip(templateBuffer);
 
         const doc = new Docxtemplater(zip, {
-            modules: [new Delimiters({ delimiters: ['[', ']'] })], // Use square brackets
+            modules: [new Delimiters({ delimiters: ['{{', '}}'] })], // Use curly braces
             parser: customParser
         });
 
