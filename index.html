@@ -65,7 +65,8 @@
         a:hover {
             text-decoration: underline;
         }
-                /* Styling for toggle switch */
+
+        /* Styling for toggle switch */
         .toggle-container {
             display: flex;
             justify-content: space-between;
@@ -160,7 +161,7 @@
             const formattedDate = today.toLocaleDateString('en-US', options);
             const docDateHidden = document.createElement('input');
             docDateHidden.type = 'hidden';
-            docDateHidden.name = 'doc-date';
+            docDateHidden.name = 'doc_date';
             docDateHidden.value = formattedDate;
             document.getElementById('document-form').appendChild(docDateHidden);
 
@@ -228,15 +229,15 @@
             </div>
             <div class="input-group">
                 <label for="trade-date">Trade Date:</label>
-                <input type="date" id="trade-date" name="trade-date" required>
+                <input type="date" id="trade-date" name="tradeDate" required>
             </div>
             <div class="input-group">
                 <label for="maturity-date">Maturity Date:</label>
-                <input type="date" id="maturity-date" name="maturity-date" required>
+                <input type="date" id="maturity-date" name="maturityDate" required>
             </div>
             <div class="input-group">
                 <label for="underlier_name">Underlier Name:</label>
-                <select id="underlier_name" name="underlier_name" required>
+                <select id="underlier_name" name="underlierName" required>
                     <option value="Nasdaq-100 Index®">Nasdaq-100 Index®</option>
                     <option value="AAPL">Common Stock of Apple Inc.</option>
                     <option value="Dow Jones Industrial Average">Dow Jones Industrial Average</option>
@@ -252,7 +253,7 @@
             <div class="input-group">
                 <label for="downside_threshold">Downside Threshold:</label>
                 <input type="text" id="downside_threshold" required>
-                <input type="hidden" id="downside_threshold-hidden" name="downside_threshold">
+                <input type="hidden" id="downside_threshold-hidden" name="downsideThreshold">
             </div>
             <div class="input-group">
                 <label for="notional">Notional:</label>
