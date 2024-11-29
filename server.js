@@ -10,22 +10,8 @@ const multer = require('multer');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// CORS Configuration to Allow Only Specific Domain
-const corsOptions = {
-    origin: (origin, callback) => {
-        const allowedOrigins = ['https://phillydogs.github.io']; // Add other allowed domains here if needed
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
-    methods: ['GET', 'POST'], // Allowed HTTP methods
-    allowedHeaders: ['Content-Type'], // Allowed headers
-};
-
-app.use(cors(corsOptions)); // Apply CORS middleware
-
+// Allow all origins temporarily
+app.use(cors());
 
 // Body Parsers
 app.use(express.json());
