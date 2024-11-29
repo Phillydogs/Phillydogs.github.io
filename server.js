@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const PizZip = require('pizzip');
 const Docxtemplater = require('docxtemplater');
-const cors = require('cors');  // Importing cors package
+const cors = require('cors');
 const moment = require('moment');
 const multer = require('multer');
 
@@ -15,75 +15,71 @@ app.use(cors({
     origin: 'https://phillydogs.github.io'  // Allow only your GitHub Pages domain
 }));
 
-// Alternatively, allow multiple specific domains
-// app.use(cors({
-//     origin: ['https://phillydogs.github.io', 'https://anotherdomain.com']
-// }));
-
 // Multer setup to handle form data (without file upload)
-const storage = multer.memoryStorage();  // We store the data in memory
+const storage = multer.memoryStorage();  // Store the data in memory
 const upload = multer({ storage: storage });  // Add multer middleware here
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Stored template file path
-const templatePath = path.join(__dirname, 'templates', 'template.docx'); // Change this to your template file path
+// Path to the template file
+const templatePath = path.join(__dirname, 'templates', 'template.docx');
 
-// Helper function to replace placeholders in text
+// Function to set data for Docxtemplater
 function replacePlaceholders(doc, data) {
-    const formattedData = {};
-    Object.keys(data).forEach((key) => {
-        formattedData[key.replace(/[\[\]]/g, '')] = data[key]; // Removing brackets from placeholder names
-    });
-    console.log("Formatted Data for Docxtemplater:", formattedData);  // Debugging data
-    doc.setData(formattedData);  // Set the data for Docxtemplater to replace placeholders
+    console.log("Formatted Data for Docxtemplater:", data);  // Debugging
+    doc.setData(data);  // Set the data for Docxtemplater to replace placeholders
 }
 
-// Handle form submission and document generation
 app.post('/generate', upload.none(), (req, res) => {
-    // Get data from form
-    const { issuer, tradeDate, maturityDate, underlierName, downside, downsideThreshold, notional } = req.body;
+    // Form data from the request
+    const {
+        issuer,
+        tradeDate,
+        maturityDate,
+        underlierName,
+        downside,
+        downsideThreshold,
+        notional
+    } = req.body;
+
     const currentDate = moment().format('MMMM D, YYYY');
 
-    // Debugging logs
-    console.log("Data received on server:", req.body);
-    console.log("Date passed to Docxtemplater:", currentDate);
+    // Prepare data for placeholder replacement
+    const data = {
+        '[issuer]': issuer,
+        '[trade_date]': tradeDate,
+        '[maturity_date]': maturityDate,
+        '[underlier]': underlierName, // Corrected to match the template's placeholder
+        '[downside]': downside,
+        '[downside_threshold]': downsideThreshold,
+        '[notional]': notional,
+        '[doc_date]': currentDate
+    };
+
+    console.log("Data passed to Docxtemplater:", data);  // Debugging
 
     try {
-        // Read and load the template file
+        // Ensure the template exists
         if (!fs.existsSync(templatePath)) {
             throw new Error("Template file not found.");
         }
 
-        const templateBuffer = fs.readFileSync(templatePath);
-        const zip = new PizZip(templateBuffer);
+        const templateBuffer = fs.readFileSync(templatePath);  // Read the template file
+        const zip = new PizZip(templateBuffer);  // Load the file into PizZip
         const doc = new Docxtemplater(zip, { paragraphLoop: true, linebreaks: true });
 
-        // Prepare data to replace the placeholders in the template
-        const data = {
-            '[issuer]': issuer,
-            '[trade_date]': tradeDate,
-            '[maturity_date]': maturityDate,
-            '[underlier_name]': underlierName,
-            '[downside]': downside,
-            '[downside_threshold]': downsideThreshold,
-            '[notional]': notional,
-            '[doc_date]': currentDate,
-        };
-
-        // Log the data being passed for template replacement
-        console.log("Data passed to Docxtemplater:", data);
-
-        // Replace placeholders with actual values
+        // Replace placeholders
         replacePlaceholders(doc, data);
 
-        // Generate the file in memory
+        // Generate the document in memory
         const buf = doc.getZip().generate({ type: 'nodebuffer' });
 
-        // Set response headers and send the generated file as download
+        // Set headers for download
         res.setHeader('Content-Disposition', 'attachment; filename=output.docx');
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+
+        // Send the generated document
         res.send(buf);
 
     } catch (error) {
