@@ -3,7 +3,6 @@ const fs = require('fs');
 const path = require('path');
 const PizZip = require('pizzip');
 const Docxtemplater = require('docxtemplater');
-const expressions = require('angular-expressions');
 const { Delimiters } = require('docxtemplater-expressions');
 const cors = require('cors');
 const multer = require('multer');
@@ -11,19 +10,29 @@ const multer = require('multer');
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(cors({ origin: 'https://phillydogs.github.io' })); // Allow GitHub Pages domain
+// CORS Configuration
+const corsOptions = {
+    origin: 'https://phillydogs.github.io', // Replace with your allowed origin
+    methods: ['GET', 'POST'], // Allowed HTTP methods
+    allowedHeaders: ['Content-Type'], // Allowed headers
+};
+app.use(cors(corsOptions)); // Apply CORS middleware
+
+// Body Parsers
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Multer Configuration
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
+// Template Path
 const templatePath = path.join(__dirname, 'templates', 'template.docx');
 
-// Custom parser to use square brackets for placeholders
+// Configure Docxtemplater to Recognize Square Brackets
 function customParser(tag) {
     return {
-        get: tag === '.' ? function (s) { return s; } : function (s) { return expressions.compile(tag)(s); }
+        get: tag === '.' ? function (s) { return s; } : function (s) { return require('angular-expressions').compile(tag)(s); }
     };
 }
 
@@ -44,31 +53,32 @@ app.post('/generate', upload.none(), (req, res) => {
         day: 'numeric'
     });
 
+    // Data for Placeholder Replacement
     const data = {
-        issuer,
-        trade_date: tradeDate,
-        maturity_date: maturityDate,
-        underlier: underlierName,
-        downside,
-        downside_threshold: downsideThreshold,
-        notional,
-        doc_date: currentDate
+        '[issuer]': issuer,
+        '[trade_date]': tradeDate,
+        '[maturity_date]': maturityDate,
+        '[underlier]': underlierName,
+        '[downside]': downside,
+        '[downside_threshold]': downsideThreshold,
+        '[notional]': notional,
+        '[doc_date]': currentDate
     };
 
-    console.log("Data passed to Docxtemplater:", data);
+    console.log("Data passed to Docxtemplater:", data); // Debugging log
 
     try {
         const templateBuffer = fs.readFileSync(templatePath);
         const zip = new PizZip(templateBuffer);
 
-        // Configure Docxtemplater to recognize square brackets
         const doc = new Docxtemplater(zip, {
-            modules: [new Delimiters({ delimiters: ['[', ']'] })],
+            modules: [new Delimiters({ delimiters: ['[', ']'] })], // Use square brackets
             parser: customParser
         });
 
         doc.setData(data);
 
+        // Perform Placeholder Replacement
         try {
             doc.render();
         } catch (error) {
@@ -76,6 +86,7 @@ app.post('/generate', upload.none(), (req, res) => {
             return res.status(500).send('Error rendering document');
         }
 
+        // Generate and Send the Word Document
         const buf = doc.getZip().generate({ type: 'nodebuffer' });
         res.setHeader('Content-Disposition', 'attachment; filename=output.docx');
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
