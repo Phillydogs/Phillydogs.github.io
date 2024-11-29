@@ -3,13 +3,15 @@ const fs = require('fs');
 const path = require('path');
 const PizZip = require('pizzip');
 const Docxtemplater = require('docxtemplater');
+const expressions = require('angular-expressions');
+const { Delimiters } = require('docxtemplater-expressions');
 const cors = require('cors');
 const multer = require('multer');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(cors({ origin: 'https://phillydogs.github.io' }));
+app.use(cors({ origin: 'https://phillydogs.github.io' })); // Allow GitHub Pages domain
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -17,6 +19,13 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 const templatePath = path.join(__dirname, 'templates', 'template.docx');
+
+// Custom parser to use square brackets for placeholders
+function customParser(tag) {
+    return {
+        get: tag === '.' ? function (s) { return s; } : function (s) { return expressions.compile(tag)(s); }
+    };
+}
 
 app.post('/generate', upload.none(), (req, res) => {
     const {
@@ -36,14 +45,14 @@ app.post('/generate', upload.none(), (req, res) => {
     });
 
     const data = {
-        '[issuer]': issuer,
-        '[trade_date]': tradeDate,
-        '[maturity_date]': maturityDate,
-        '[underlier]': underlierName,
-        '[downside]': downside,
-        '[downside_threshold]': downsideThreshold,
-        '[notional]': notional,
-        '[doc_date]': currentDate
+        issuer,
+        trade_date: tradeDate,
+        maturity_date: maturityDate,
+        underlier: underlierName,
+        downside,
+        downside_threshold: downsideThreshold,
+        notional,
+        doc_date: currentDate
     };
 
     console.log("Data passed to Docxtemplater:", data);
@@ -51,11 +60,15 @@ app.post('/generate', upload.none(), (req, res) => {
     try {
         const templateBuffer = fs.readFileSync(templatePath);
         const zip = new PizZip(templateBuffer);
-        const doc = new Docxtemplater(zip, { paragraphLoop: true, linebreaks: true });
+
+        // Configure Docxtemplater to recognize square brackets
+        const doc = new Docxtemplater(zip, {
+            modules: [new Delimiters({ delimiters: ['[', ']'] })],
+            parser: customParser
+        });
 
         doc.setData(data);
 
-        // Attempt placeholder replacement
         try {
             doc.render();
         } catch (error) {
