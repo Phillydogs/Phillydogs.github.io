@@ -1,207 +1,148 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Metadata Section -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Legal Document Generator</title>
+
+    <!-- Styles Section -->
     <style>
+        /* General Styles */
         body {
             font-family: Arial, sans-serif;
-            background-color: #f5f5f5; /* Light gray background for better readability */
+            background-color: #f9fafb;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
+            flex-direction: column;
         }
-    
+
         .container {
-            background: #ffffff; /* White background for the container */
+            background: white;
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 320px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 300px;
         }
-    
+
         h1 {
             text-align: center;
-            color: #333333; /* Dark gray for the heading */
-            margin-bottom: 20px;
+            color: #333;
         }
-    
+
         .input-group {
             margin-bottom: 15px;
         }
-    
+
         label {
             display: block;
             margin-bottom: 5px;
-            color: #555555; /* Medium gray for labels */
+            color: #555;
         }
-    
+
         input[type="text"], input[type="date"], input[type="number"], select {
             width: 100%;
             padding: 8px;
-            border: 1px solid #dddddd;
+            border: 1px solid #ddd;
             border-radius: 4px;
             box-sizing: border-box;
         }
-    
+
         button {
             width: 100%;
             padding: 10px;
             border: none;
             border-radius: 4px;
-            background-color: #4CAF50; /* Green background for the button */
+            background-color: #007bff;
             color: white;
             font-size: 16px;
             cursor: pointer;
             margin-top: 10px;
         }
-    
+
         button:hover {
-            background-color: #45a049; /* Darker green on hover */
+            background-color: #0056b3;
         }
-    
+
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
         /* Segmented Control Styles */
-        .flight-types {
+        .segmented-control {
             display: flex;
-            border: 1px solid #cccccc;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+            border: 1px solid #d1d5db;
             border-radius: 8px;
             overflow: hidden;
-            margin-bottom: 20px;
-            background-color: #e0e0e0; /* Light gray background for segmented control */
-            position: relative;
+            background-color: #f9fafb;
+            width: 100%;
+            max-width: 300px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-    
-        .flight-types input {
+
+        .segmented-control input {
             display: none;
         }
-    
-        .flight-types label {
+
+        .segmented-control label {
             flex: 1;
+            padding: 10px 20px;
             text-align: center;
-            padding: 10px;
-            font-size: 14px;
+            font-size: 16px;
+            font-family: Arial, sans-serif;
             cursor: pointer;
-            color: #333333; /* Dark gray for labels */
-            transition: color 250ms cubic-bezier(0, 0.95, 0.38, 0.98);
-            position: relative;
-            z-index: 1;
+            background-color: #f9fafb;
+            color: #6b7280;
+            border-right: 1px solid #d1d5db;
+            transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
         }
-    
-        .flight-types label:not(:last-child) {
-            border-right: 1px solid #cccccc;
+
+        .segmented-control label:last-child {
+            border-right: none;
         }
-    
-        .flight-types label::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: #ffffff; /* White background for the active segment */
-            border-radius: 3px;
-            z-index: -1;
-            transform: translateX(0);
-            transition: all 250ms cubic-bezier(0, 0.95, 0.38, 0.98);
-        }
-    
-        .flight-types input:checked + label {
-            color: #4CAF50; /* Green color for active label */
+
+        .segmented-control input:checked + label {
+            background-color: #10b981;
+            color: white;
             font-weight: bold;
+            box-shadow: inset 0 -3px 5px rgba(0, 0, 0, 0.1);
         }
-    
-        .flight-types input:nth-of-type(1):checked ~ label:first-of-type::before {
-            transform: translateX(0);
-        }
-    
-        .flight-types input:nth-of-type(2):checked ~ label:nth-of-type(2)::before {
-            transform: translateX(100%);
+
+        .segmented-control label:hover {
+            background-color: #e5e7eb;
+            color: #374151;
         }
     </style>
-    
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const notionalInput = document.getElementById('notional');
-            notionalInput.addEventListener('blur', function () {
-                const value = parseFloat(notionalInput.value);
-                if (!isNaN(value)) {
-                    notionalInput.value = value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
-                }
-            });
-
-            notionalInput.addEventListener('focus', function () {
-                const value = notionalInput.value.replace(/[$,]/g, '');
-                notionalInput.value = value;
-            });
-
-            const downsideThresholdInput = document.getElementById('downside_threshold');
-            const downsideThresholdHidden = document.getElementById('downside_threshold-hidden');
-
-            downsideThresholdInput.addEventListener('blur', function () {
-                let value = parseFloat(downsideThresholdInput.value);
-                if (!isNaN(value)) {
-                    downsideThresholdHidden.value = value;
-                    downsideThresholdInput.value = value.toFixed(2) + '%';
-                }
-            });
-
-            downsideThresholdInput.addEventListener('focus', function () {
-                let value = downsideThresholdHidden.value || '';
-                downsideThresholdInput.value = value;
-            });
-
-            const today = new Date();
-            const options = { year: 'numeric', month: 'long', day: 'numeric' };
-            const formattedDate = today.toLocaleDateString('en-US', options);
-            const docDateHidden = document.createElement('input');
-            docDateHidden.type = 'hidden';
-            docDateHidden.name = 'doc_date';
-            docDateHidden.value = formattedDate;
-            document.getElementById('document-form').appendChild(docDateHidden);
-
-            document.getElementById('document-form').addEventListener('submit', async function (e) {
-                e.preventDefault();
-                const formData = new FormData(this);
-
-                const response = await fetch('https://structuredgen-2d4826d917be.herokuapp.com/generate', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (response.ok) {
-                    const blob = await response.blob();
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.style.display = 'none';
-                    a.href = url;
-                    a.download = 'output.docx';
-                    document.body.appendChild(a);
-                    a.click();
-                    window.URL.revokeObjectURL(url);
-                    alert('Your file has been generated!');
-                } else {
-                    alert('An error occurred while generating the document.');
-                }
-            });
-        });
-    </script>
 </head>
 <body>
+    <!-- Main Container Section -->
     <div class="container">
         <h1>Legal Document Generator</h1>
 
-        <!-- Segmented Button -->
-        <div class="flight-types">
-            <input type="radio" name="view" id="prelim" value="Prelim" checked>
+        <!-- Segmented Control Section -->
+        <div class="segmented-control">
+            <input type="radio" id="prelim" name="view" checked>
             <label for="prelim">Prelim</label>
-            <input type="radio" name="view" id="final" value="Final">
+
+            <input type="radio" id="final" name="view">
             <label for="final">Final</label>
         </div>
 
-        <!-- Form -->
+        <!-- Form Section -->
         <form id="document-form" enctype="multipart/form-data">
             <div class="input-group">
                 <label for="issuer">Issuer:</label>
@@ -246,5 +187,78 @@
             <button type="submit">Generate Document</button>
         </form>
     </div>
+
+    <!-- JavaScript Section -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Auto-fill today's date in hidden doc_date field
+            const today = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            const formattedDate = today.toLocaleDateString('en-US', options);
+            const docDateHidden = document.createElement('input');
+            docDateHidden.type = 'hidden';
+            docDateHidden.name = 'doc_date';
+            docDateHidden.value = formattedDate;
+            document.getElementById('document-form').appendChild(docDateHidden);
+
+            // Format notional input
+            const notionalInput = document.getElementById('notional');
+            notionalInput.addEventListener('blur', function () {
+                const value = parseFloat(notionalInput.value);
+                if (!isNaN(value)) {
+                    notionalInput.value = value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+                }
+            });
+
+            notionalInput.addEventListener('focus', function () {
+                const value = notionalInput.value.replace(/[$,]/g, '');
+                notionalInput.value = value;
+            });
+
+            // Format downside threshold input
+            const downsideThresholdInput = document.getElementById('downside_threshold');
+            const downsideThresholdHidden = document.getElementById('downside_threshold-hidden');
+
+            downsideThresholdInput.addEventListener('blur', function () {
+                let value = parseFloat(downsideThresholdInput.value);
+                if (!isNaN(value)) {
+                    downsideThresholdHidden.value = value;
+                    downsideThresholdInput.value = value.toFixed(2) + '%';
+                }
+            });
+
+            downsideThresholdInput.addEventListener('focus', function () {
+                let value = downsideThresholdHidden.value || '';
+                downsideThresholdInput.value = value;
+            });
+
+            // Form submission handler
+            document.getElementById('document-form').addEventListener('submit', async function (e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+
+                const response = await fetch('https://structuredgen-2d4826d917be.herokuapp.com/generate', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = 'output.docx';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    alert('Your file has been generated!');
+                } else {
+                    console.error('Error:', response.statusText);
+                    alert('An error occurred while generating the document.');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
