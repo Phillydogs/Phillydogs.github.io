@@ -181,12 +181,18 @@
 
         <!-- Segmented Control Section -->
         <div class="segmented-control">
-            <input type="radio" id="prelim" name="view" checked>
-            <label for="prelim">Prelim</label>
-
-            <input type="radio" id="final" name="view">
-            <label for="final">Final</label>
+            <input type="radio" id="prelim" name="doc-type" value="Prelim" checked>
+            <label for="prelim" onclick="toggleNotional(false)">Prelim</label>
+        
+            <input type="radio" id="final" name="doc-type" value="Final">
+            <label for="final" onclick="toggleNotional(true)">Final</label>
         </div>
+        
+        <div id="notional-container" class="input-group" style="display: none;">
+            <label for="notional">Notional:</label>
+            <input type="text" id="notional" name="notional">
+        </div>
+        
 
 
 <!-- Date Tile Section (Moved Inside the Form) -->
@@ -288,6 +294,16 @@
         settlementDateInput.value = '';
     }
 });
+
+function toggleNotional(show) {
+    const notionalContainer = document.getElementById("notional-container");
+    if (show) {
+        notionalContainer.style.display = "block";
+    } else {
+        notionalContainer.style.display = "none";
+    }
+}
+
 
     // Log form submission for debugging
     document.getElementById('document-form').addEventListener('submit', function (e) {
