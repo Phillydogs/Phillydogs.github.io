@@ -269,20 +269,13 @@
         document.addEventListener('DOMContentLoaded', function () {
             const tradeDateInput = document.getElementById('tradeDate');
             const settlementDateInput = document.getElementById('settlementDate');
-            const notionalInput = document.getElementById('notional');
             const notionalContainer = document.getElementById('notional-container');
+            const notionalInput = document.getElementById('notional');
             const downsideThresholdInput = document.getElementById('downside_threshold');
             const downsideThresholdHidden = document.getElementById('downside_threshold-hidden');
+            const prelimRadio = document.getElementById('prelim');
+            const finalRadio = document.getElementById('final');
             const docDateHidden = document.createElement('input');
-    
-            // Auto-fill today's date in hidden doc_date field
-            const today = new Date();
-            const options = { year: 'numeric', month: 'long', day: 'numeric' };
-            const formattedDate = today.toLocaleDateString('en-US', options);
-            docDateHidden.type = 'hidden';
-            docDateHidden.name = 'doc_date';
-            docDateHidden.value = formattedDate;
-            document.getElementById('document-form').appendChild(docDateHidden);
     
             // Function to calculate business days
             function addBusinessDays(date, days) {
@@ -313,7 +306,7 @@
                 }
             });
     
-            // Function to toggle the visibility of the Notional input
+            // Function to toggle visibility of the existing Notional input box
             function toggleNotional(show) {
                 if (show) {
                     notionalContainer.style.display = "block";
@@ -322,10 +315,7 @@
                 }
             }
     
-            // Set up toggle functionality for the segmented control
-            const prelimRadio = document.getElementById('prelim');
-            const finalRadio = document.getElementById('final');
-    
+            // Attach event listeners to toggle visibility
             prelimRadio.addEventListener('change', () => toggleNotional(false));
             finalRadio.addEventListener('change', () => toggleNotional(true));
     
@@ -355,6 +345,15 @@
                 let value = downsideThresholdHidden.value || '';
                 downsideThresholdInput.value = value;
             });
+    
+            // Auto-fill today's date in hidden doc_date field
+            const today = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            const formattedDate = today.toLocaleDateString('en-US', options);
+            docDateHidden.type = 'hidden';
+            docDateHidden.name = 'doc_date';
+            docDateHidden.value = formattedDate;
+            document.getElementById('document-form').appendChild(docDateHidden);
     
             // Form submission handler
             document.getElementById('document-form').addEventListener('submit', async function (e) {
@@ -392,8 +391,13 @@
                     alert('An unexpected error occurred.');
                 }
             });
+    
+            // Hide Notional input by default
+            toggleNotional(false);
         });
     </script>
+    
+    
     
 </body>
 </html>
