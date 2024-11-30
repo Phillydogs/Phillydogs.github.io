@@ -105,78 +105,93 @@
         
     
     </style>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const notionalInput = document.getElementById('notional');
-            notionalInput.addEventListener('blur', function() {
-                const value = parseFloat(notionalInput.value);
-                if (!isNaN(value)) {
-                    notionalInput.value = value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
-                }
-            });
-
-            notionalInput.addEventListener('focus', function() {
-                const value = notionalInput.value.replace(/[$,]/g, '');
-                notionalInput.value = value;
-            });
-
-            const downsideThresholdInput = document.getElementById('downside_threshold');
-            const downsideThresholdHidden = document.getElementById('downside_threshold-hidden');
-
-            downsideThresholdInput.addEventListener('blur', function() {
-                let value = parseFloat(downsideThresholdInput.value);
-                if (!isNaN(value)) {
-                    downsideThresholdHidden.value = value;
-                    downsideThresholdInput.value = value.toFixed(2) + '%';
-                }
-            });
-
-            downsideThresholdInput.addEventListener('focus', function() {
-                let value = downsideThresholdHidden.value || '';
-                downsideThresholdInput.value = value;
-            });
-
-            const today = new Date();
-            const options = { year: 'numeric', month: 'long', day: 'numeric' };
-            const formattedDate = today.toLocaleDateString('en-US', options);
-            const docDateHidden = document.createElement('input');
-            docDateHidden.type = 'hidden';
-            docDateHidden.name = 'doc_date';
-            docDateHidden.value = formattedDate;
-            document.getElementById('document-form').appendChild(docDateHidden);
-
-            document.getElementById('document-form').addEventListener('submit', async function(e) {
-                e.preventDefault();
-                const formData = new FormData(this);
-
-                // Log form data for debugging
-                for (let [key, value] of formData.entries()) {
-                    console.log(key, value); // Debugging log
-                }
-
-                const response = await fetch('https://structuredgen-2d4826d917be.herokuapp.com/generate', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (response.ok) {
-                    const blob = await response.blob();
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.style.display = 'none';
-                    a.href = url;
-                    a.download = 'output.docx';
-                    document.body.appendChild(a);
-                    a.click();
-                    window.URL.revokeObjectURL(url);
-                    alert('Your file has been generated!');
-                } else {
-                    console.error('Error:', response.statusText);
-                    alert('An error occurred while generating the document.');
-                }
-            });
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const notionalInput = document.getElementById('notional');
+        notionalInput.addEventListener('blur', function() {
+            const value = parseFloat(notionalInput.value);
+            if (!isNaN(value)) {
+                notionalInput.value = value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+            }
         });
-    </script>
+
+        notionalInput.addEventListener('focus', function() {
+            const value = notionalInput.value.replace(/[$,]/g, '');
+            notionalInput.value = value;
+        });
+
+        const downsideThresholdInput = document.getElementById('downside_threshold');
+        const downsideThresholdHidden = document.getElementById('downside_threshold-hidden');
+
+        downsideThresholdInput.addEventListener('blur', function() {
+            let value = parseFloat(downsideThresholdInput.value);
+            if (!isNaN(value)) {
+                downsideThresholdHidden.value = value;
+                downsideThresholdInput.value = value.toFixed(2) + '%';
+            }
+        });
+
+        downsideThresholdInput.addEventListener('focus', function() {
+            let value = downsideThresholdHidden.value || '';
+            downsideThresholdInput.value = value;
+        });
+
+        const today = new Date();
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        const formattedDate = today.toLocaleDateString('en-US', options);
+        const docDateHidden = document.createElement('input');
+        docDateHidden.type = 'hidden';
+        docDateHidden.name = 'doc_date';
+        docDateHidden.value = formattedDate;
+        document.getElementById('document-form').appendChild(docDateHidden);
+
+        document.getElementById('document-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+
+            // Log form data for debugging
+            for (let [key, value] of formData.entries()) {
+                console.log(key, value); // Debugging log
+            }
+
+            const response = await fetch('https://structuredgen-2d4826d917be.herokuapp.com/generate', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = 'output.docx';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                alert('Your file has been generated!');
+            } else {
+                console.error('Error:', response.statusText);
+                alert('An error occurred while generating the document.');
+            }
+        });
+
+        // Add the selectView function for toggle buttons
+        window.selectView = function(view) {
+            const prelimBtn = document.getElementById('prelim-btn');
+            const finalBtn = document.getElementById('final-btn');
+
+            if (view === 'prelim') {
+                prelimBtn.classList.add('active');
+                finalBtn.classList.remove('active');
+            } else if (view === 'final') {
+                finalBtn.classList.add('active');
+                prelimBtn.classList.remove('active');
+            }
+        };
+    });
+</script>
+
 </head>
 <body>
     <div class="container">
