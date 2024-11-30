@@ -61,6 +61,7 @@ app.post("/generate", upload.none(), (req, res) => {
         const data = {
             issuer: req.body.issuer || "Unknown Issuer",
             tradeDate: req.body.tradeDate || "N/A",
+            settlementDate: formatDate(req.body.settlementDate), // Format date
             maturityDate: formatDate(req.body.maturityDate), // Format date
             underlierName: req.body.underlierName || "N/A",
             downside: req.body.downside || "N/A",
