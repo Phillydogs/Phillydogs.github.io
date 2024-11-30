@@ -49,6 +49,12 @@ app.get("/", (req, res) => {
     res.send("Server is up and running!");
 });
 
+// Helper function to remove only the $ symbol from the notional value
+function cleanNotional(value) {
+    if (!value) return "N/A";
+    return value.replace(/\$/g, ""); // Remove only the $ symbol
+}
+
 // Endpoint to handle file generation
 app.post("/generate", upload.none(), (req, res) => {
     try {
@@ -66,7 +72,7 @@ app.post("/generate", upload.none(), (req, res) => {
             underlierName: req.body.underlierName || "N/A",
             downside: req.body.downside || "N/A",
             downsideThreshold: formatDownsideThreshold(req.body.downsideThreshold), // Format to 2 decimal places
-            notional: req.body.notional || "N/A",
+            notional: cleanNotional(req.body.notional), // Remove $ and commas
             doc_date: req.body.doc_date || "N/A",
         };
 
@@ -87,6 +93,7 @@ app.post("/generate", upload.none(), (req, res) => {
         res.status(500).send(`Error generating document: ${error.message}`);
     }
 });
+
 
 // Start the server
 const PORT = process.env.PORT || 3000;
