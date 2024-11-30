@@ -15,33 +15,39 @@
             margin: 0;
             flex-direction: column;
         }
+    
         .container {
             background: white;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             width: 320px;
         }
+    
         h1 {
             text-align: center;
             color: #333;
             margin-bottom: 20px;
         }
+    
         .input-group {
             margin-bottom: 15px;
         }
+    
         label {
             display: block;
             margin-bottom: 5px;
             color: #555;
         }
+    
         input[type="text"], input[type="date"], input[type="number"], select {
             width: 100%;
-            padding: 8px;
+            padding: 10px;
             border: 1px solid #ddd;
             border-radius: 8px;
             box-sizing: border-box;
         }
+    
         button {
             width: 100%;
             padding: 10px;
@@ -53,9 +59,11 @@
             cursor: pointer;
             margin-top: 10px;
         }
+    
         button:hover {
             background-color: #0056b3;
         }
+    
         a {
             display: block;
             text-align: center;
@@ -63,57 +71,67 @@
             color: #007bff;
             text-decoration: none;
         }
+    
         a:hover {
             text-decoration: underline;
         }
     
-        /* Toggle Switch Styles */
-        .toggle-container {
+        /* Material Design Segmented Button */
+        .segmented-container {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             margin-bottom: 20px;
-            width: 100%;
+            background-color: #f4f4f4;
             border-radius: 8px;
             overflow: hidden;
             border: 1px solid #ddd;
-            background-color: #f4f4f4;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
         }
     
-        .toggle-button {
+        .segmented-button {
             flex: 1;
-            padding: 8px 0; /* Adjusted for slimmer height */
+            padding: 10px 0;
             text-align: center;
-            background-color: #f4f4f4;
-            color: #555;
-            cursor: pointer;
-            outline: none;
             font-size: 16px;
             font-family: Arial, sans-serif;
+            cursor: pointer;
+            outline: none;
+            background: transparent;
             border: none;
-            transition: background-color 0.3s, color 0.3s;
-            position: relative;
+            transition: background-color 0.2s, color 0.2s;
+            color: #555;
         }
     
-        .toggle-button.active {
+        .segmented-button.active {
             background-color: #007bff;
             color: white;
             font-weight: bold;
-            border-radius: 8px; /* Consistent with the rest of the container */
+            position: relative;
         }
     
-        .toggle-button.active::before {
+        .segmented-button.active::before {
             content: '✔';
             position: absolute;
-            left: 10px;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
             font-size: 16px;
-            margin-right: 5px;
             color: white;
         }
     
-        .toggle-button:hover:not(.active) {
-            background-color: #e4e4e4;
+        .segmented-button:hover:not(.active) {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+    
+        .segmented-container .segmented-button:first-child {
+            border-radius: 8px 0 0 8px;
+        }
+    
+        .segmented-container .segmented-button:last-child {
+            border-radius: 0 8px 8px 0;
         }
     </style>
+    
     
     
     
