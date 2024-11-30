@@ -191,16 +191,8 @@
             <label for="final">Final</label>
         </div>
         
-        <div id="notional-container" style="display: none;">
-            <label for="notional">Notional:</label>
-            <input type="text" id="notional" name="notional">
-        </div>
+     
         
-        
-        
-
-        
-
 
 <!-- Date Tile Section (Moved Inside the Form) -->
 <form id="document-form" enctype="multipart/form-data">
@@ -258,9 +250,10 @@
                 <input type="text" id="downside_threshold" required>
                 <input type="hidden" id="downside_threshold-hidden" name="downsideThreshold">
             </div>
-            <div class="input-group" id="notional-container" style="display: none;">
+            <div id="notional-container" style="display: none;">
                 <label for="notional">Notional:</label>
                 <input type="text" id="notional" name="notional">
+            </div>
             </div>
             
             <button type="submit">Generate Document</button>
