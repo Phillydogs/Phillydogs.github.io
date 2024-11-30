@@ -77,7 +77,7 @@
 
         /* Segmented Button Styles */
         .segmented-control {
-            display: inline-flex;
+            display: flex;
             border: 1px solid #d1d5db;
             border-radius: 8px;
             overflow: hidden;
@@ -86,56 +86,42 @@
             width: 100%;
         }
 
-        .segmented-control button {
-            flex: 1;
-            padding: 10px 20px;
-            background: none;
-            border: none;
-            font-size: 16px;
-            font-family: Arial, sans-serif;
-            cursor: pointer;
-            transition: background-color 0.3s, color 0.3s;
-            text-align: center;
+        .segmented-control input {
+            display: none;
         }
 
-        .segmented-control button.active {
+        .segmented-control label {
+            flex: 1;
+            padding: 10px 0;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .segmented-control label:not(:last-child) {
+            border-right: 1px solid #d1d5db;
+        }
+
+        .segmented-control input:checked + label {
             background-color: #007bff;
             color: white;
             font-weight: bold;
             position: relative;
         }
 
-        .segmented-control button.active::before {
+        .segmented-control input:checked + label::before {
             content: "✔";
+            position: absolute;
+            left: 8px;
             font-size: 14px;
-            margin-right: 8px;
         }
 
-        .segmented-control button:not(.active):hover {
+        .segmented-control label:hover {
             background-color: #e5e7eb;
-            color: #374151;
         }
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Segmented button toggle
-            function selectView(view) {
-                const prelimBtn = document.getElementById("prelim-btn");
-                const finalBtn = document.getElementById("final-btn");
-
-                if (view === "prelim") {
-                    prelimBtn.classList.add("active");
-                    finalBtn.classList.remove("active");
-                } else if (view === "final") {
-                    finalBtn.classList.add("active");
-                    prelimBtn.classList.remove("active");
-                }
-            }
-
-            // Add the selectView function to the window object for onclick handlers
-            window.selectView = selectView;
-
-            // Format notional input
             const notionalInput = document.getElementById('notional');
             notionalInput.addEventListener('blur', function() {
                 const value = parseFloat(notionalInput.value);
@@ -149,7 +135,6 @@
                 notionalInput.value = value;
             });
 
-            // Format downside threshold input
             const downsideThresholdInput = document.getElementById('downside_threshold');
             const downsideThresholdHidden = document.getElementById('downside_threshold-hidden');
 
@@ -166,7 +151,6 @@
                 downsideThresholdInput.value = value;
             });
 
-            // Auto-fill today's date in hidden doc_date field
             const today = new Date();
             const options = { year: 'numeric', month: 'long', day: 'numeric' };
             const formattedDate = today.toLocaleDateString('en-US', options);
@@ -176,15 +160,9 @@
             docDateHidden.value = formattedDate;
             document.getElementById('document-form').appendChild(docDateHidden);
 
-            // Form submission handler
             document.getElementById('document-form').addEventListener('submit', async function(e) {
                 e.preventDefault();
                 const formData = new FormData(this);
-
-                // Log form data for debugging
-                for (let [key, value] of formData.entries()) {
-                    console.log(key, value); // Debugging log
-                }
 
                 const response = await fetch('https://structuredgen-2d4826d917be.herokuapp.com/generate', {
                     method: 'POST',
@@ -203,7 +181,6 @@
                     window.URL.revokeObjectURL(url);
                     alert('Your file has been generated!');
                 } else {
-                    console.error('Error:', response.statusText);
                     alert('An error occurred while generating the document.');
                 }
             });
@@ -216,8 +193,10 @@
         
         <!-- Segmented Button -->
         <div class="segmented-control">
-            <button id="prelim-btn" class="active" onclick="selectView('prelim')">Prelim</button>
-            <button id="final-btn" onclick="selectView('final')">Final</button>
+            <input type="radio" name="view" id="prelim" value="Prelim" checked>
+            <label for="prelim">Prelim</label>
+            <input type="radio" name="view" id="final" value="Final">
+            <label for="final">Final</label>
         </div>
 
         <form id="document-form" enctype="multipart/form-data">
