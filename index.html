@@ -52,17 +52,19 @@
         }
     
         button {
-            width: calc(100% - 20px); /* Adjust to fit within the container padding */
-            padding: 10px;
-            border: none;
-            border-radius: 4px;
-            background-color: #007bff;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            margin: 0 auto; /* Center align */
-            display: block; /* Ensure proper layout within parent container */
-        } 
+    width: 100%; /* Ensure it spans the width of the container */
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+    box-sizing: border-box; /* Ensure padding doesn't overflow */
+    max-width: 300px; /* Restrict the button's max width */
+}
+
     
         button:hover {
             background-color: #0056b3;
@@ -255,9 +257,10 @@
                 <label for="notional">Notional:</label>
                 <input type="text" id="notional" name="notional">
             </div>
-            </div>
+            <button type="submit">Generate Document</button>   
+        </div>
             
-            <button type="submit">Generate Document</button>
+
         </form>
     </div>
 

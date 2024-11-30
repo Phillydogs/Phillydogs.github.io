@@ -51,7 +51,7 @@ app.get("/", (req, res) => {
 
 // Helper function to remove only the $ symbol from the notional value
 function cleanNotional(value) {
-    if (!value) return "N/A";
+    if (!value) return "";
     return value.replace(/\$/g, ""); // Remove only the $ symbol
 }
 
