@@ -27,6 +27,23 @@ function formatDownsideThreshold(value) {
     return parseFloat(value).toFixed(2); // Convert to 2 decimal places
 }
 
+function selectView(view) {
+    // Reset both buttons to inactive state
+    document.getElementById("prelim-btn").classList.remove("active");
+    document.getElementById("final-btn").classList.remove("active");
+  
+    // Set the selected button to active
+    if (view === "prelim") {
+      document.getElementById("prelim-btn").classList.add("active");
+    } else if (view === "final") {
+      document.getElementById("final-btn").classList.add("active");
+    }
+  
+    // Additional functionality can go here, e.g., toggling view content
+    console.log(`Selected view: ${view}`);
+  }
+
+
 // Root endpoint for health check
 app.get("/", (req, res) => {
     res.send("Server is up and running!");

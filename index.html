@@ -5,6 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Legal Document Generator</title>
     <style>
+        .toggle-switch {
+  display: inline-flex;
+  border: 1px solid #c8c8c8;
+  border-radius: 30px;
+  overflow: hidden;
+}
+
+.toggle-button {
+  flex: 1;
+  padding: 10px 20px;
+  background-color: #f4f4f4;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  font-size: 16px;
+  font-family: Arial, sans-serif;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.toggle-button.active {
+  background-color: #dff1d8;
+  color: black;
+  font-weight: bold;
+}
+
+.toggle-button:hover {
+  background-color: #e4e4e4;
+}
+
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
@@ -142,6 +171,12 @@
 <body>
     <div class="container">
         <h1>Legal Document Generator</h1>
+        <div style="text-align: center; margin: 20px 0;">
+            <div class="toggle-switch">
+              <button id="prelim-btn" class="toggle-button active" onclick="selectView('prelim')">Prelim</button>
+              <button id="final-btn" class="toggle-button" onclick="selectView('final')">Final</button>
+            </div>
+          </div>
         <form id="document-form" enctype="multipart/form-data">
             <div class="input-group">
                 <label for="issuer">Issuer:</label>
