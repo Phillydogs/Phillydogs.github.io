@@ -91,6 +91,7 @@
             background-color: #f9fafb;
             width: 100%;
             max-width: 300px;
+            gap: 0; /* Ensure no gaps between elements */
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
     
@@ -107,12 +108,9 @@
             cursor: pointer;
             background-color: #f9fafb;
             color: #6b7280;
-            border-right: 1px solid #d1d5db;
+            border: none; /* Remove borders from labels */
             transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
-        }
-    
-        .segmented-control label:last-child {
-            border-right: none;
+            margin: 0; /* Ensure no margin between labels */
         }
     
         .segmented-control input:checked + label {
@@ -174,11 +172,12 @@
         }
     </style>
     
+    
 </head>
 <body>
     <!-- Main Container Section -->
     <div class="container">
-        <h1>Legal Document Generator</h1>
+        <h1>Structured Gen</h1>
 
         <!-- Segmented Control Section -->
         <div class="segmented-control">
@@ -205,7 +204,7 @@
         </div>
         <div class="date-row">
             <div class="date-group">
-                <label for="finalObservationDate">Final Observation Date:</label>
+                <label for="finalObservationDate">Final Obs. Date:</label>
                 <input type="date" id="finalObservationDate" name="finalObservationDate">
             </div>
             <div class="date-group">
