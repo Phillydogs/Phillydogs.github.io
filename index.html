@@ -126,6 +126,43 @@
             background-color: #e5e7eb;
             color: #374151;
         }
+
+        /* Tile Styles for Trade and Maturity Date */
+        .date-tile {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            margin-bottom: 20px;
+            background-color: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .date-tile .date-group {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+        .date-tile .date-group:last-child {
+            margin-right: 0;
+        }
+
+        .date-tile label {
+            font-size: 14px;
+            color: #4b5563;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .date-tile input {
+            width: 100%;
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
     </style>
 </head>
 <body>
@@ -142,6 +179,18 @@
             <label for="final">Final</label>
         </div>
 
+        <!-- Date Tile Section -->
+        <div class="date-tile">
+            <div class="date-group">
+                <label for="tradeDate">Trade Date:</label>
+                <input type="date" id="tradeDate" name="tradeDate" required>
+            </div>
+            <div class="date-group">
+                <label for="maturityDate">Maturity Date:</label>
+                <input type="date" id="maturityDate" name="maturityDate" required>
+            </div>
+        </div>
+
         <!-- Form Section -->
         <form id="document-form" enctype="multipart/form-data">
             <div class="input-group">
@@ -151,14 +200,6 @@
                     <option value="BANK2">BANK2</option>
                     <option value="BANK3">BANK3</option>
                 </select>
-            </div>
-            <div class="input-group">
-                <label for="tradeDate">Trade Date:</label>
-                <input type="date" id="tradeDate" name="tradeDate" required>
-            </div>
-            <div class="input-group">
-                <label for="maturityDate">Maturity Date:</label>
-                <input type="date" id="maturityDate" name="maturityDate" required>
             </div>
             <div class="input-group">
                 <label for="underlierName">Underlier Name:</label>
