@@ -183,15 +183,28 @@
 <!-- Date Tile Section (Moved Inside the Form) -->
 <form id="document-form" enctype="multipart/form-data">
     <div class="date-tile">
+        <!-- Trade Date and Settlement Date -->
         <div class="date-group">
             <label for="tradeDate">Trade Date:</label>
             <input type="date" id="tradeDate" name="tradeDate" required>
         </div>
         <div class="date-group">
+            <label for="settlementDate">Settlement Date:</label>
+            <input type="date" id="settlementDate" name="settlementDate" readonly>
+        </div>
+    </div>
+    <div class="date-tile">
+        <!-- Maturity Date and Final Observation Date -->
+        <div class="date-group">
             <label for="maturityDate">Maturity Date:</label>
             <input type="date" id="maturityDate" name="maturityDate" required>
         </div>
+        <div class="date-group">
+            <label for="finalObservationDate">Final Observation Date:</label>
+            <input type="date" id="finalObservationDate" name="finalObservationDate">
+        </div>
     </div>
+    
         <form id="document-form" enctype="multipart/form-data">
             <div class="input-group">
                 <label for="issuer">Issuer:</label>
@@ -231,6 +244,54 @@
 
     <!-- JavaScript Section -->
     <script>
+        
+        document.addEventListener('DOMContentLoaded', function () {
+    const tradeDateInput = document.getElementById('tradeDate');
+    const settlementDateInput = document.getElementById('settlementDate');
+
+    // Function to calculate business days
+    function addBusinessDays(date, days) {
+        let result = new Date(date);
+        let count = 0;
+
+        while (count < days) {
+            result.setDate(result.getDate() + 1);
+
+            // Check if it's a weekend (Saturday = 6, Sunday = 0)
+            if (result.getDay() !== 0 && result.getDay() !== 6) {
+                count++;
+            }
+        }
+        return result;
+    }
+
+    // Update Settlement Date when Trade Date changes
+    tradeDateInput.addEventListener('change', function () {
+        const tradeDateValue = tradeDateInput.value;
+
+        if (tradeDateValue) {
+            const tradeDate = new Date(tradeDateValue);
+            const settlementDate = addBusinessDays(tradeDate, 2); // Add 2 business days
+            settlementDateInput.value = settlementDate.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+        } else {
+            settlementDateInput.value = '';
+        }
+    });
+
+    // Log form submission for debugging
+    document.getElementById('document-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+        for (let [key, value] of formData.entries()) {
+            console.log(`${key}: ${value}`);
+        }
+
+        // Continue form submission process here
+    });
+});
+
+        
         document.addEventListener('DOMContentLoaded', function () {
             // Auto-fill today's date in hidden doc_date field
             const today = new Date();
