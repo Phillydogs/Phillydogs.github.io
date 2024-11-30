@@ -179,19 +179,19 @@
             <label for="final">Final</label>
         </div>
 
-        <!-- Date Tile Section -->
-        <div class="date-tile">
-            <div class="date-group">
-                <label for="tradeDate">Trade Date:</label>
-                <input type="date" id="tradeDate" name="tradeDate" required>
-            </div>
-            <div class="date-group">
-                <label for="maturityDate">Maturity Date:</label>
-                <input type="date" id="maturityDate" name="maturityDate" required>
-            </div>
-        </div>
 
-        <!-- Form Section -->
+<!-- Date Tile Section (Moved Inside the Form) -->
+<form id="document-form" enctype="multipart/form-data">
+    <div class="date-tile">
+        <div class="date-group">
+            <label for="tradeDate">Trade Date:</label>
+            <input type="date" id="tradeDate" name="tradeDate" required>
+        </div>
+        <div class="date-group">
+            <label for="maturityDate">Maturity Date:</label>
+            <input type="date" id="maturityDate" name="maturityDate" required>
+        </div>
+    </div>
         <form id="document-form" enctype="multipart/form-data">
             <div class="input-group">
                 <label for="issuer">Issuer:</label>
@@ -276,7 +276,12 @@
             // Form submission handler
             document.getElementById('document-form').addEventListener('submit', async function (e) {
                 e.preventDefault();
+
+                // Form data debug logging
                 const formData = new FormData(this);
+                for (let [key, value] of formData.entries()) {
+                    console.log(`Key: ${key}, Value: ${value}`);
+                }
 
                 const response = await fetch('https://structuredgen-2d4826d917be.herokuapp.com/generate', {
                     method: 'POST',
