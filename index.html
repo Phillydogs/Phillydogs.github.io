@@ -7,13 +7,12 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background-color: #3395DE;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            flex-direction: column;
         }
 
         .container {
@@ -21,12 +20,13 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 300px;
+            width: 320px;
         }
 
         h1 {
             text-align: center;
             color: #333;
+            margin-bottom: 20px;
         }
 
         .input-group {
@@ -63,74 +63,75 @@
             background-color: #0056b3;
         }
 
-        a {
-            display: block;
-            text-align: center;
-            margin-top: 20px;
-            color: #007bff;
-            text-decoration: none;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        /* Segmented Button Styles */
-        .segmented-control {
+        /* Segmented Control Styles */
+        .flight-types {
             display: flex;
-            border: 1px solid #d1d5db;
+            border: 1px solid #fff;
             border-radius: 8px;
             overflow: hidden;
             margin-bottom: 20px;
             background-color: #f9fafb;
-            width: 100%;
-        }
-
-        .segmented-control input {
-            display: none;
-        }
-
-        .segmented-control label {
-            flex: 1;
-            padding: 10px 0;
-            text-align: center;
-            cursor: pointer;
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        .segmented-control label:not(:last-child) {
-            border-right: 1px solid #d1d5db;
-        }
-
-        .segmented-control input:checked + label {
-            background-color: #007bff;
-            color: white;
-            font-weight: bold;
             position: relative;
         }
 
-        .segmented-control input:checked + label::before {
-            content: "✔";
-            position: absolute;
-            left: 8px;
-            font-size: 14px;
+        .flight-types input {
+            display: none;
         }
 
-        .segmented-control label:hover {
-            background-color: #e5e7eb;
+        .flight-types label {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            font-size: 14px;
+            cursor: pointer;
+            color: #fff;
+            transition: color 250ms cubic-bezier(0, 0.95, 0.38, 0.98);
+            position: relative;
+            z-index: 1;
+        }
+
+        .flight-types label:not(:last-child) {
+            border-right: 1px solid #fff;
+        }
+
+        .flight-types label::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #fff;
+            border-radius: 3px;
+            z-index: -1;
+            transform: translateX(0);
+            transition: all 250ms cubic-bezier(0, 0.95, 0.38, 0.98);
+        }
+
+        .flight-types input:checked + label {
+            color: #3395DE;
+            font-weight: bold;
+        }
+
+        .flight-types input:nth-of-type(1):checked ~ label:first-of-type::before {
+            transform: translateX(0);
+        }
+
+        .flight-types input:nth-of-type(2):checked ~ label:nth-of-type(2)::before {
+            transform: translateX(100%);
         }
     </style>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const notionalInput = document.getElementById('notional');
-            notionalInput.addEventListener('blur', function() {
+            notionalInput.addEventListener('blur', function () {
                 const value = parseFloat(notionalInput.value);
                 if (!isNaN(value)) {
                     notionalInput.value = value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
                 }
             });
 
-            notionalInput.addEventListener('focus', function() {
+            notionalInput.addEventListener('focus', function () {
                 const value = notionalInput.value.replace(/[$,]/g, '');
                 notionalInput.value = value;
             });
@@ -138,7 +139,7 @@
             const downsideThresholdInput = document.getElementById('downside_threshold');
             const downsideThresholdHidden = document.getElementById('downside_threshold-hidden');
 
-            downsideThresholdInput.addEventListener('blur', function() {
+            downsideThresholdInput.addEventListener('blur', function () {
                 let value = parseFloat(downsideThresholdInput.value);
                 if (!isNaN(value)) {
                     downsideThresholdHidden.value = value;
@@ -146,7 +147,7 @@
                 }
             });
 
-            downsideThresholdInput.addEventListener('focus', function() {
+            downsideThresholdInput.addEventListener('focus', function () {
                 let value = downsideThresholdHidden.value || '';
                 downsideThresholdInput.value = value;
             });
@@ -160,7 +161,7 @@
             docDateHidden.value = formattedDate;
             document.getElementById('document-form').appendChild(docDateHidden);
 
-            document.getElementById('document-form').addEventListener('submit', async function(e) {
+            document.getElementById('document-form').addEventListener('submit', async function (e) {
                 e.preventDefault();
                 const formData = new FormData(this);
 
@@ -190,15 +191,16 @@
 <body>
     <div class="container">
         <h1>Legal Document Generator</h1>
-        
+
         <!-- Segmented Button -->
-        <div class="segmented-control">
+        <div class="flight-types">
             <input type="radio" name="view" id="prelim" value="Prelim" checked>
             <label for="prelim">Prelim</label>
             <input type="radio" name="view" id="final" value="Final">
             <label for="final">Final</label>
         </div>
 
+        <!-- Form -->
         <form id="document-form" enctype="multipart/form-data">
             <div class="input-group">
                 <label for="issuer">Issuer:</label>
