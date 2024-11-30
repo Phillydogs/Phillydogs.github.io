@@ -4,11 +4,54 @@
     <!-- Metadata Section -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Legal Document Generator</title>
+    <title>Structured Gen</title>
 
     <!-- Styles Section -->
     <style>
         /* General Styles */
+        
+        .date-tile {
+    padding: 15px;
+    background-color: #f9fafb;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: 1px solid #e5e7eb;
+}
+
+.date-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.date-group {
+    flex: 1;
+    margin-right: 10px;
+}
+
+.date-group:last-child {
+    margin-right: 0; /* Remove margin for the last group */
+}
+
+label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #374151;
+}
+
+input[type="date"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #4b5563;
+    background-color: #ffffff;
+    box-sizing: border-box;
+}
+
+
         body {
             font-family: Arial, sans-serif;
             background-color: #f9fafb;
@@ -183,27 +226,29 @@
 <!-- Date Tile Section (Moved Inside the Form) -->
 <form id="document-form" enctype="multipart/form-data">
     <div class="date-tile">
-        <!-- Trade Date and Settlement Date -->
-        <div class="date-group">
-            <label for="tradeDate">Trade Date:</label>
-            <input type="date" id="tradeDate" name="tradeDate" required>
+        <div class="date-row">
+            <div class="date-group">
+                <label for="tradeDate">Trade Date:</label>
+                <input type="date" id="tradeDate" name="tradeDate" required>
+            </div>
+            <div class="date-group">
+                <label for="settlementDate">Settlement Date:</label>
+                <input type="date" id="settlementDate" name="settlementDate" readonly>
+            </div>
         </div>
-        <div class="date-group">
-            <label for="settlementDate">Settlement Date:</label>
-            <input type="date" id="settlementDate" name="settlementDate" readonly>
+        <div class="date-row">
+            <div class="date-group">
+                <label for="finalObservationDate">Final Observation Date:</label>
+                <input type="date" id="finalObservationDate" name="finalObservationDate">
+            </div>
+            <div class="date-group">
+                <label for="maturityDate">Maturity Date:</label>
+                <input type="date" id="maturityDate" name="maturityDate" required>
+            </div>
         </div>
     </div>
-    <div class="date-tile">
-        <!-- Maturity Date and Final Observation Date -->
-        <div class="date-group">
-            <label for="maturityDate">Maturity Date:</label>
-            <input type="date" id="maturityDate" name="maturityDate" required>
-        </div>
-        <div class="date-group">
-            <label for="finalObservationDate">Final Observation Date:</label>
-            <input type="date" id="finalObservationDate" name="finalObservationDate">
-        </div>
-    </div>
+    
+    
     
         <form id="document-form" enctype="multipart/form-data">
             <div class="input-group">
@@ -267,16 +312,16 @@
 
     // Update Settlement Date when Trade Date changes
     tradeDateInput.addEventListener('change', function () {
-        const tradeDateValue = tradeDateInput.value;
+    const tradeDateValue = tradeDateInput.value;
 
-        if (tradeDateValue) {
-            const tradeDate = new Date(tradeDateValue);
-            const settlementDate = addBusinessDays(tradeDate, 2); // Add 2 business days
-            settlementDateInput.value = settlementDate.toISOString().split('T')[0]; // Format as YYYY-MM-DD
-        } else {
-            settlementDateInput.value = '';
-        }
-    });
+    if (tradeDateValue) {
+        const tradeDate = new Date(tradeDateValue);
+        const settlementDate = addBusinessDays(tradeDate, 2); // Add 2 business days
+        settlementDateInput.value = settlementDate.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+    } else {
+        settlementDateInput.value = '';
+    }
+});
 
     // Log form submission for debugging
     document.getElementById('document-form').addEventListener('submit', function (e) {
