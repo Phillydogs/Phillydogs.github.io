@@ -1,11 +1,14 @@
 const { Pool } = require('pg');
 
-// Create a connection pool using the DATABASE_URL environment variable
+// Heroku automatically sets DATABASE_URL in the environment variables for your app
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: {
-        rejectUnauthorized: false, // Required for Heroku
+        rejectUnauthorized: false, // Required for Heroku PostgreSQL
     },
 });
 
-module.exports = pool;
+// Export the pool to use for queries
+module.exports = {
+    query: (text, params) => pool.query(text, params),
+};

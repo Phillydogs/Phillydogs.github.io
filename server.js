@@ -78,7 +78,7 @@ app.post('/underliers', express.json(), async (req, res) => {
 });
 
 
-app.get("https://structuredgen-2d4826d917be.herokuapp.com/underliers", async (req, res) => {
+app.get('/underliers', async (req, res) => {
     try {
         console.log('Fetching all underliers...');
         const result = await pool.query("SELECT * FROM underliers ORDER BY created_at DESC");
