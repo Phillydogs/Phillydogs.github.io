@@ -52,22 +52,13 @@ function selectView(view) {
     console.log(`Selected view: ${view}`);
   }
 
-  app.get("/underliers", async (req, res) => {
-    try {
-        const result = await pool.query("SELECT * FROM underliers ORDER BY created_at DESC");
-        res.json(result.rows);
-    } catch (error) {
-        console.error("Error fetching underliers:", error);
-        res.status(500).send("Error fetching underliers.");
-    }
-});
-
 
 app.post('/underliers', express.json(), async (req, res) => {
-    console.log('Request body:', req.body);
+    console.log('Request body:', req.body); // Debugging: Check the request body
     const { name } = req.body;
 
     if (!name) {
+        console.log('Validation failed: Underlier name is required.');
         return res.status(400).send('Underlier name is required.');
     }
 
@@ -76,7 +67,7 @@ app.post('/underliers', express.json(), async (req, res) => {
             'INSERT INTO underliers (name) VALUES ($1) RETURNING *',
             [name]
         );
-        console.log('Inserted underlier:', result.rows[0]);
+        console.log('Inserted underlier:', result.rows[0]); // Debugging: Log the saved underlier
         res.status(201).json(result.rows[0]);
     } catch (error) {
         console.error('Error inserting underlier:', error);
@@ -84,6 +75,18 @@ app.post('/underliers', express.json(), async (req, res) => {
     }
 });
 
+
+app.get("/underliers", async (req, res) => {
+    try {
+        console.log('Fetching all underliers...');
+        const result = await pool.query("SELECT * FROM underliers ORDER BY created_at DESC");
+        console.log('Fetched underliers:', result.rows); // Debugging: Log the fetched data
+        res.json(result.rows);
+    } catch (error) {
+        console.error("Error fetching underliers:", error);
+        res.status(500).send("Error fetching underliers.");
+    }
+});
 
 
 // Root endpoint for health check

@@ -336,9 +336,11 @@ document.addEventListener('DOMContentLoaded', async function () {
     // Function to fetch and populate underliers
     async function fetchUnderliers() {
         try {
+            console.log("Fetching underliers...");
             const response = await fetch('/underliers');
             if (!response.ok) throw new Error('Failed to fetch underliers');
             const data = await response.json();
+            console.log("Fetched underliers:", data); // Debug
             underlierSelect.innerHTML = ''; // Clear existing options
             data.forEach(underlier => {
                 const option = document.createElement('option');
@@ -356,6 +358,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // Open the modal when "Add Underlier" is clicked
     addUnderlierBtn.addEventListener('click', () => {
+        console.log("Opening modal...");
         underlierModal.style.display = 'block';
     });
 
@@ -364,12 +367,14 @@ document.addEventListener('DOMContentLoaded', async function () {
         const newUnderlier = newUnderlierInput.value.trim();
         if (newUnderlier) {
             try {
+                console.log("Saving underlier:", newUnderlier); // Debug
                 const response = await fetch('/underliers', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ name: newUnderlier }),
                 });
                 if (!response.ok) throw new Error('Failed to add underlier');
+                console.log("Underlier saved successfully.");
                 underlierModal.style.display = 'none'; // Close the modal
                 newUnderlierInput.value = ''; // Clear the input
                 await fetchUnderliers(); // Refresh the dropdown
@@ -388,6 +393,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     });
 });
+
            
             
             
