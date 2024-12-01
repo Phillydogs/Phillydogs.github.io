@@ -236,11 +236,18 @@
             <div class="input-group">
                 <label for="underlierName">Underlier Name:</label>
                 <select id="underlierName" name="underlierName" required>
-                    <option value="Nasdaq-100 Index®">Nasdaq-100 Index®</option>
-                    <option value="AAPL">Common Stock of Apple Inc.</option>
-                    <option value="Dow Jones Industrial Average">Dow Jones Industrial Average</option>
+                    <!-- Options will be populated dynamically -->
                 </select>
+                <button type="button" id="addUnderlierBtn">Add New</button>
             </div>
+            
+            <!-- Modal for Adding Underlier -->
+            <div id="underlierModal" style="display: none;">
+                <label for="newUnderlier">Enter New Underlier Name:</label>
+                <input type="text" id="newUnderlier" />
+                <button id="saveUnderlierBtn">Save</button>
+            </div>
+          
             <div class="input-group">
                 <label for="downside">Downside Protection Type:</label>
                 <select id="downside" name="downside" required>
@@ -316,6 +323,49 @@
                 }
             }
     
+            
+            document.addEventListener('DOMContentLoaded', async function () {
+    const underlierSelect = document.getElementById('underlierName');
+
+    // Fetch underliers from the backend
+    async function fetchUnderliers() {
+        const response = await fetch('/api/underliers');
+        const data = await response.json();
+        underlierSelect.innerHTML = ''; // Clear existing options
+        data.forEach(underlier => {
+            const option = document.createElement('option');
+            option.value = underlier.name;
+            option.textContent = underlier.name;
+            underlierSelect.appendChild(option);
+        });
+    }
+
+    // Load underliers on page load
+    await fetchUnderliers();
+
+    // Add new underlier functionality
+    document.getElementById('addUnderlierBtn').addEventListener('click', () => {
+        document.getElementById('underlierModal').style.display = 'block';
+    });
+
+    document.getElementById('saveUnderlierBtn').addEventListener('click', async () => {
+        const newUnderlier = document.getElementById('newUnderlier').value;
+        if (newUnderlier) {
+            await fetch('/api/underliers', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: newUnderlier })
+            });
+            document.getElementById('underlierModal').style.display = 'none';
+            document.getElementById('newUnderlier').value = '';
+            await fetchUnderliers(); // Refresh dropdown
+        }
+    });
+});
+
+            
+            
+            
             // Attach event listeners to the Prelim and Final toggle
             document.getElementById('prelim').addEventListener('change', function () {
                 toggleNotional(false);

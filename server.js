@@ -9,6 +9,15 @@ const cors = require("cors");
 const app = express();
 const upload = multer();
 
+const { Pool } = require("pg");
+
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+        rejectUnauthorized: false,
+    },
+});
+
 // CORS configuration (adjusted for troubleshooting; allow everything for now)
 app.use(cors({ origin: "*" }));
 
@@ -42,6 +51,16 @@ function selectView(view) {
     // Additional functionality can go here, e.g., toggling view content
     console.log(`Selected view: ${view}`);
   }
+
+  app.get("/underliers", async (req, res) => {
+    try {
+        const result = await pool.query("SELECT * FROM underliers ORDER BY created_at DESC");
+        res.json(result.rows);
+    } catch (error) {
+        console.error("Error fetching underliers:", error);
+        res.status(500).send("Error fetching underliers.");
+    }
+});
 
 
 // Root endpoint for health check
@@ -93,6 +112,12 @@ app.post("/generate", upload.none(), (req, res) => {
         res.status(500).send(`Error generating document: ${error.message}`);
     }
 });
+
+app.use((err, req, res, next) => {
+    console.error("Server error:", err);
+    res.status(500).send("Server error. Please try again later.");
+});
+
 
 
 // Start the server
