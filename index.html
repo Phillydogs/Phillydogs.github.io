@@ -333,7 +333,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     const newUnderlierInput = document.getElementById('newUnderlier');
     const underlierModal = document.getElementById('underlierModal');
 
-    // Fetch underliers from the backend
+    // Function to fetch and populate underliers
     async function fetchUnderliers() {
         try {
             const response = await fetch('/underliers');
@@ -354,12 +354,12 @@ document.addEventListener('DOMContentLoaded', async function () {
     // Load underliers on page load
     await fetchUnderliers();
 
-    // Open the modal when "Add New" is clicked
+    // Open the modal when "Add Underlier" is clicked
     addUnderlierBtn.addEventListener('click', () => {
         underlierModal.style.display = 'block';
     });
 
-    // Save the new underlier
+    // Save the new underlier and refresh dropdown
     saveUnderlierBtn.addEventListener('click', async () => {
         const newUnderlier = newUnderlierInput.value.trim();
         if (newUnderlier) {
@@ -369,13 +369,12 @@ document.addEventListener('DOMContentLoaded', async function () {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ name: newUnderlier }),
                 });
-                if (!response.ok) throw new Error('Failed to add new underlier');
-                await fetchUnderliers(); // Refresh dropdown
-                underlierModal.style.display = 'none';
+                if (!response.ok) throw new Error('Failed to add underlier');
+                underlierModal.style.display = 'none'; // Close the modal
                 newUnderlierInput.value = ''; // Clear the input
+                await fetchUnderliers(); // Refresh the dropdown
             } catch (error) {
                 console.error('Error adding underlier:', error);
-                alert('Failed to add new underlier.');
             }
         } else {
             alert('Underlier name cannot be empty.');
@@ -389,9 +388,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     });
 });
-
-
-            
+           
             
             
             // Attach event listeners to the Prelim and Final toggle

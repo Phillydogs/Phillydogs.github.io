@@ -64,9 +64,10 @@ function selectView(view) {
 
 
 app.post('/underliers', express.json(), async (req, res) => {
+    console.log('Request body:', req.body);
     const { name } = req.body;
 
-    if (!name || name.trim() === '') {
+    if (!name) {
         return res.status(400).send('Underlier name is required.');
     }
 
@@ -75,12 +76,14 @@ app.post('/underliers', express.json(), async (req, res) => {
             'INSERT INTO underliers (name) VALUES ($1) RETURNING *',
             [name]
         );
-        res.status(201).json(result.rows[0]); // Return the newly created underlier
+        console.log('Inserted underlier:', result.rows[0]);
+        res.status(201).json(result.rows[0]);
     } catch (error) {
-        console.error('Error adding underlier:', error);
+        console.error('Error inserting underlier:', error);
         res.status(500).send('Error adding underlier.');
     }
 });
+
 
 
 // Root endpoint for health check
