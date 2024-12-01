@@ -18,6 +18,8 @@ const pool = new Pool({
     },
 });
 
+require('dotenv').config();
+
 // CORS configuration (adjusted for troubleshooting; allow everything for now)
 app.use(cors({ origin: "*" }));
 
