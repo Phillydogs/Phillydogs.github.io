@@ -343,7 +343,11 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
         const data = await response.json();
         console.log("Fetched underliers:", data); // Debugging log
-        underlierSelect.innerHTML = ''; // Clear existing options
+
+        // Clear existing options
+        underlierSelect.innerHTML = '<option value="" disabled selected>Select Underlier</option>';
+
+        // Populate the dropdown
         data.forEach(underlier => {
             const option = document.createElement('option');
             option.value = underlier.name;
@@ -357,8 +361,18 @@ document.addEventListener('DOMContentLoaded', async function () {
 }
 
 
-    // Load underliers on page load
-    await fetchUnderliers();
+
+// Ensure underliers are fetched and dropdown is populated on page load
+document.addEventListener('DOMContentLoaded', async function () {
+    try {
+        console.log("Loading underliers on page load...");
+        await fetchUnderliers(); // Fetch and populate underliers when the page loads.
+    } catch (error) {
+        console.error("Error loading underliers on page load:", error);
+        alert("Error loading underliers. Please refresh the page.");
+    }
+});
+
 
     // Open the modal when "Add Underlier" is clicked
     addUnderlierBtn.addEventListener('click', () => {
@@ -369,29 +383,35 @@ document.addEventListener('DOMContentLoaded', async function () {
     // Save the new underlier and refresh dropdown
     saveUnderlierBtn.addEventListener('click', async () => {
     const newUnderlier = newUnderlierInput.value.trim();
-    console.log("Save button clicked. New Underlier:", newUnderlier); // Debugging log
-    if (newUnderlier) {
-        try {
-            const response = await fetch('https://structuredgen-2d4826d917be.herokuapp.com/underliers', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: newUnderlier }),
-            });
-            if (!response.ok) {
-                throw new Error(`Failed to add underlier: ${response.statusText}`);
-            }
-            console.log("Underlier saved successfully.");
-            underlierModal.style.display = 'none';
-            newUnderlierInput.value = ''; // Clear the input
-            await fetchUnderliers(); // Refresh the dropdown
-        } catch (error) {
-            console.error('Error adding underlier:', error);
-            alert(`Error adding underlier: ${error.message}`);
+    if (!newUnderlier) {
+        alert("Underlier name cannot be empty.");
+        return;
+    }
+
+    try {
+        console.log("Saving new underlier:", newUnderlier); // Debugging log
+        const response = await fetch('https://structuredgen-2d4826d917be.herokuapp.com/underliers', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: newUnderlier }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to add underlier: ${response.statusText}`);
         }
-    } else {
-        alert('Underlier name cannot be empty.');
+
+        // Hide modal and clear input
+        underlierModal.style.display = 'none';
+        newUnderlierInput.value = '';
+
+        // Refresh dropdown
+        await fetchUnderliers();
+    } catch (error) {
+        console.error("Error saving underlier:", error);
+        alert(`Error saving underlier: ${error.message}`);
     }
 });
+
 
 
     // Close the modal if clicking outside of it
