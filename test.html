@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Test Fetch</title>
+</head>
+<body>
+  <select id="underlierName"></select>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const underlierSelect = document.getElementById('underlierName');
+      fetch('https://structuredgen-2d4826d917be.herokuapp.com/underliers')
+        .then(response => response.json())
+        .then(data => {
+          data.forEach(underlier => {
+            const option = document.createElement('option');
+            option.value = underlier.name;
+            option.textContent = underlier.name;
+            underlierSelect.appendChild(option);
+          });
+        })
+        .catch(error => console.error('Fetch error:', error));
+    });
+  </script>
+</body>
+</html>
