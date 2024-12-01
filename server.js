@@ -63,6 +63,26 @@ function selectView(view) {
 });
 
 
+app.post('/underliers', express.json(), async (req, res) => {
+    const { name } = req.body;
+
+    if (!name || name.trim() === '') {
+        return res.status(400).send('Underlier name is required.');
+    }
+
+    try {
+        const result = await pool.query(
+            'INSERT INTO underliers (name) VALUES ($1) RETURNING *',
+            [name]
+        );
+        res.status(201).json(result.rows[0]); // Return the newly created underlier
+    } catch (error) {
+        console.error('Error adding underlier:', error);
+        res.status(500).send('Error adding underlier.');
+    }
+});
+
+
 // Root endpoint for health check
 app.get("/", (req, res) => {
     res.send("Server is up and running!");

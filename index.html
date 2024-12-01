@@ -324,44 +324,72 @@
             }
     
             
-            document.addEventListener('DOMContentLoaded', async function () {
+// underlier selection
+
+document.addEventListener('DOMContentLoaded', async function () {
     const underlierSelect = document.getElementById('underlierName');
+    const addUnderlierBtn = document.getElementById('addUnderlierBtn');
+    const saveUnderlierBtn = document.getElementById('saveUnderlierBtn');
+    const newUnderlierInput = document.getElementById('newUnderlier');
+    const underlierModal = document.getElementById('underlierModal');
 
     // Fetch underliers from the backend
     async function fetchUnderliers() {
-        const response = await fetch('/api/underliers');
-        const data = await response.json();
-        underlierSelect.innerHTML = ''; // Clear existing options
-        data.forEach(underlier => {
-            const option = document.createElement('option');
-            option.value = underlier.name;
-            option.textContent = underlier.name;
-            underlierSelect.appendChild(option);
-        });
+        try {
+            const response = await fetch('/underliers');
+            if (!response.ok) throw new Error('Failed to fetch underliers');
+            const data = await response.json();
+            underlierSelect.innerHTML = ''; // Clear existing options
+            data.forEach(underlier => {
+                const option = document.createElement('option');
+                option.value = underlier.name;
+                option.textContent = underlier.name;
+                underlierSelect.appendChild(option);
+            });
+        } catch (error) {
+            console.error('Error fetching underliers:', error);
+        }
     }
 
     // Load underliers on page load
     await fetchUnderliers();
 
-    // Add new underlier functionality
-    document.getElementById('addUnderlierBtn').addEventListener('click', () => {
-        document.getElementById('underlierModal').style.display = 'block';
+    // Open the modal when "Add New" is clicked
+    addUnderlierBtn.addEventListener('click', () => {
+        underlierModal.style.display = 'block';
     });
 
-    document.getElementById('saveUnderlierBtn').addEventListener('click', async () => {
-        const newUnderlier = document.getElementById('newUnderlier').value;
+    // Save the new underlier
+    saveUnderlierBtn.addEventListener('click', async () => {
+        const newUnderlier = newUnderlierInput.value.trim();
         if (newUnderlier) {
-            await fetch('/api/underliers', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: newUnderlier })
-            });
-            document.getElementById('underlierModal').style.display = 'none';
-            document.getElementById('newUnderlier').value = '';
-            await fetchUnderliers(); // Refresh dropdown
+            try {
+                const response = await fetch('/underliers', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: newUnderlier }),
+                });
+                if (!response.ok) throw new Error('Failed to add new underlier');
+                await fetchUnderliers(); // Refresh dropdown
+                underlierModal.style.display = 'none';
+                newUnderlierInput.value = ''; // Clear the input
+            } catch (error) {
+                console.error('Error adding underlier:', error);
+                alert('Failed to add new underlier.');
+            }
+        } else {
+            alert('Underlier name cannot be empty.');
+        }
+    });
+
+    // Close the modal if clicking outside of it
+    document.addEventListener('click', (event) => {
+        if (!underlierModal.contains(event.target) && event.target !== addUnderlierBtn) {
+            underlierModal.style.display = 'none';
         }
     });
 });
+
 
             
             
