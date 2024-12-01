@@ -337,7 +337,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     async function fetchUnderliers() {
         try {
             console.log("Fetching underliers...");
-            const response = await fetch('/underliers');
+            const response = await fetch('https://structuredgen-2d4826d917be.herokuapp.com/underliers');
             if (!response.ok) throw new Error('Failed to fetch underliers');
             const data = await response.json();
             console.log("Fetched underliers:", data); // Debug
@@ -368,7 +368,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         if (newUnderlier) {
             try {
                 console.log("Saving underlier:", newUnderlier); // Debug
-                const response = await fetch('/underliers', {
+                const response = await fetch('https://structuredgen-2d4826d917be.herokuapp.com/underliers', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ name: newUnderlier }),
