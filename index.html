@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <!-- Metadata Section -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Structured Gen</title>
@@ -145,6 +146,37 @@
         }
 
 
+        .input-group {
+        margin-bottom: 15px;
+    }
+
+    #manage-underliers {
+        font-size: 18px; /* Adjust icon size */
+        color: #6c757d; /* Default icon color */
+        width: 36px; /* Set width for uniformity */
+        height: 36px; /* Set height to match width */
+        border-radius: 50%; /* Makes it a circular button */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    #manage-underliers:hover {
+        color: #007bff; /* Hover color for the icon */
+        background-color: #f1f1f1; /* Subtle hover background */
+    }
+
+    select {
+        height: 36px; /* Matches the height of the settings button */
+        padding: 0 8px; /* Adjust padding */
+        line-height: normal; /* Prevents extra height from affecting alignment */
+    }
+
+    div.input-group > label {
+        margin-bottom: 8px;
+        display: block;
+    }
         
         /* Date Tile Styles */
         .date-tile {
@@ -252,29 +284,17 @@
            
             <div class="input-group">
                 <label for="underlierName">Underlier Name:</label>
-                <select id="underlierName" name="underlierName" required>
-                    <!-- Populated dynamically -->
-                </select>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <select id="underlierName" name="underlierName" required style="flex: 1; padding: 8px; border-radius: 4px; box-sizing: border-box;">
+                        <!-- Populated dynamically -->
+                    </select>
+                    <button id="manage-underliers" onclick="navigateToManage()" 
+                            style="background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                </div>
             </div>
             
-            <div class="input-group">
-                <label for="underlierName">Underlier Name:</label>
-                <select id="underlierName" name="underlierName" required>
-                    <!-- Options will be dynamically populated -->
-                </select>
-            </div>
-            
-            <!-- Add this link -->
-            <a href="EditUnderlier.html" class="manage-underliers-link">Manage Underliers</a>
-            
-
-            <!-- Modal for Adding Underlier -->
-            <div id="underlierModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); border-radius: 8px;">
-                <label for="newUnderlier">Enter New Underlier Name:</label>
-                <input type="text" id="newUnderlier" />
-                <button id="saveUnderlierBtn">Save</button>
-                <button type="button" id="closeModalBtn">Cancel</button>
-            </div>
             
             
             
@@ -438,7 +458,10 @@ sortedData.forEach(underlier => {
             }
     
             
-          
+            function navigateToManage() {
+    window.location.href = "EditUnderlier.html";
+}
+
             
             
             // Attach event listeners to the Prelim and Final toggle
