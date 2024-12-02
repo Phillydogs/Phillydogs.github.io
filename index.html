@@ -233,7 +233,12 @@
                     <option value="BANK3">BANK3</option>
                 </select>
             </div>
-           
+
+            <div class="input-group">
+                <label for="cusip">CUSIP:</label>
+                <input type="text" id="cusip" name="cusip" maxlength="9" minlength="9" pattern=".{9}" required 
+                       placeholder="Please enter the CUSIP" title="CUSIP must be exactly 9 characters long.">
+            </div>           
            
             <div class="input-group">
                 <label for="underlierName">Underlier Name:</label>
