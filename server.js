@@ -25,6 +25,18 @@ app.use(cors({ origin: "*" }));
 
 const templatePath = path.join(__dirname, "templates", "template.docx");
 
+// cusip validation
+document.getElementById('cusip').addEventListener('blur', function () {
+    const cusipInput = this;
+    if (cusipInput.value.length !== 9) {
+        cusipInput.setCustomValidity('CUSIP must be exactly 9 characters long.');
+        cusipInput.reportValidity(); // Show validation message immediately
+    } else {
+        cusipInput.setCustomValidity('');
+    }
+});
+
+
 // Helper function for formatting dates
 function formatDate(dateString) {
     if (!dateString) return "N/A";
@@ -160,6 +172,7 @@ app.post("/generate", upload.none(), (req, res) => {
             tradeDate: req.body.tradeDate || "N/A",
             settlementDate: formatDate(req.body.settlementDate), // Format date
             maturityDate: formatDate(req.body.maturityDate), // Format date
+            CUSIP: req.body.CUSIP || "N/A",
             underlierName: req.body.underlierName || "N/A",
             downside: req.body.downside || "N/A",
             downsideThreshold: formatDownsideThreshold(req.body.downsideThreshold), // Format to 2 decimal places
