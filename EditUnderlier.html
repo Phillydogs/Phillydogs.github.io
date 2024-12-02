@@ -12,25 +12,6 @@
             padding: 20px;
         }
 
-        #back-button {
-    display: block;
-    margin: 10px auto; /* Centers the button horizontally */
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    text-align: center;
-}
-
-#back-button:hover {
-    background-color: #0056b3;
-}
-
-
         .container {
             max-width: 600px;
             margin: auto;
@@ -104,9 +85,6 @@
 <body>
     <div class="container">
         <h1>Manage Underliers</h1>
-       
-        <button id="back-button" onclick="navigateBack()">Back to Main Page</button>
-       
         <table class="table" id="underlierTable">
             <thead>
                 <tr>
@@ -159,13 +137,6 @@
                     alert('Could not load underliers. Please try again later.');
                 }
             }
-
-
-            function navigateBack() {
-    window.location.href = "index.html"; // Replace with the correct path to the main index file if necessary
-}
-
-
 
            // Save new or edited underlier
 saveUnderlierBtn.addEventListener('click', async () => {
