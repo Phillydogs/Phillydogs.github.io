@@ -91,6 +91,50 @@ app.get('/underliers', async (req, res) => {
 });
 
 
+app.put('/underliers/:id', express.json(), async (req, res) => {
+    const { id } = req.params;
+    const { name } = req.body;
+
+    if (!name) {
+        return res.status(400).send("Underlier name is required.");
+    }
+
+    try {
+        const result = await pool.query(
+            "UPDATE underliers SET name = $1 WHERE id = $2 RETURNING *",
+            [name, id]
+        );
+
+        if (result.rowCount === 0) {
+            return res.status(404).send("Underlier not found.");
+        }
+
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error("Error updating underlier:", error);
+        res.status(500).send("Error updating underlier.");
+    }
+});
+
+
+app.delete('/underliers/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const result = await pool.query("DELETE FROM underliers WHERE id = $1 RETURNING *", [id]);
+
+        if (result.rowCount === 0) {
+            return res.status(404).send("Underlier not found.");
+        }
+
+        res.sendStatus(204); // No content response
+    } catch (error) {
+        console.error("Error deleting underlier:", error);
+        res.status(500).send("Error deleting underlier.");
+    }
+});
+
+
 // Root endpoint for health check
 app.get("/", (req, res) => {
     res.send("Server is up and running!");

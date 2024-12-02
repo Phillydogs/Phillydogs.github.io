@@ -138,45 +138,58 @@
                 }
             }
 
-            // Save new or edited underlier
-            saveUnderlierBtn.addEventListener('click', async () => {
-                const underlierName = newUnderlierInput.value.trim();
-                if (!underlierName) {
-                    alert('Underlier name cannot be empty.');
-                    return;
-                }
+           // Save new or edited underlier
+saveUnderlierBtn.addEventListener('click', async () => {
+    const underlierName = newUnderlierInput.value.trim();
+    if (!underlierName) {
+        alert('Underlier name cannot be empty.');
+        return;
+    }
 
-                try {
-                    const response = await fetch('https://structuredgen-2d4826d917be.herokuapp.com/underliers', {
-                        method: editUnderlierId ? 'PUT' : 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ id: editUnderlierId, name: underlierName }),
-                    });
-                    if (!response.ok) throw new Error('Failed to save underlier.');
+    try {
+        const url = editUnderlierId
+            ? `https://structuredgen-2d4826d917be.herokuapp.com/underliers/${editUnderlierId}`
+            : 'https://structuredgen-2d4826d917be.herokuapp.com/underliers';
 
-                    newUnderlierInput.value = '';
-                    editUnderlierId = null; // Clear edit state
-                    await fetchUnderliers(); // Refresh list
-                } catch (error) {
-                    console.error('Error saving underlier:', error);
-                    alert('Could not save underlier. Please try again.');
-                }
-            });
+        const method = editUnderlierId ? 'PUT' : 'POST';
 
-            // Delete an underlier
-            async function deleteUnderlier(id) {
-                try {
-                    const response = await fetch(`https://structuredgen-2d4826d917be.herokuapp.com/underliers/${id}`, {
-                        method: 'DELETE',
-                    });
-                    if (!response.ok) throw new Error('Failed to delete underlier.');
+        const response = await fetch(url, {
+            method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: underlierName }),
+        });
 
-                    await fetchUnderliers(); // Refresh list
-                } catch (error) {
-                    console.error('Error deleting underlier:', error);
-                    alert('Could not delete underlier. Please try again.');
-                }
-            }
+        if (!response.ok) {
+            throw new Error('Failed to save underlier.');
+        }
+
+        newUnderlierInput.value = '';
+        editUnderlierId = null; // Clear edit state
+        await fetchUnderliers(); // Refresh list
+    } catch (error) {
+        console.error('Error saving underlier:', error);
+        alert('Could not save underlier. Please try again.');
+    }
+});
+
+// Delete an underlier
+async function deleteUnderlier(id) {
+    try {
+        const response = await fetch(`https://structuredgen-2d4826d917be.herokuapp.com/underliers/${id}`, {
+            method: 'DELETE',
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to delete underlier.');
+        }
+
+        await fetchUnderliers(); // Refresh list
+    } catch (error) {
+        console.error('Error deleting underlier:', error);
+        alert('Could not delete underlier. Please try again.');
+    }
+}
+
 
             // Attach event listeners to edit and delete buttons
             function attachEventListeners() {
