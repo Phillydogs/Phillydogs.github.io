@@ -160,6 +160,7 @@ app.post("/generate", upload.none(), (req, res) => {
             tradeDate: req.body.tradeDate || "N/A",
             settlementDate: formatDate(req.body.settlementDate), // Format date
             maturityDate: formatDate(req.body.maturityDate), // Format date
+            CUSIP: req.body.CUSIP || "N/A",
             underlierName: req.body.underlierName || "N/A",
             downside: req.body.downside || "N/A",
             downsideThreshold: formatDownsideThreshold(req.body.downsideThreshold), // Format to 2 decimal places
