@@ -299,12 +299,17 @@ document.addEventListener('DOMContentLoaded', async function () {
             console.log("Fetched underliers:", data);
 
             underlierSelect.innerHTML = '<option disabled selected>Choose an Underlier</option>'; // Default option
-            data.forEach(underlier => {
-                const option = document.createElement('option');
-                option.value = underlier.name;
-                option.textContent = underlier.name;
-                underlierSelect.appendChild(option);
-            });
+            // Sort underliers alphabetically by name
+const sortedData = data.sort((a, b) => a.name.localeCompare(b.name));
+
+// Populate the dropdown with sorted data
+sortedData.forEach(underlier => {
+    const option = document.createElement('option');
+    option.value = underlier.name;
+    option.textContent = underlier.name;
+    underlierSelect.appendChild(option);
+});
+
         } catch (error) {
             console.error("Error fetching underliers:", error);
             alert("Error fetching underliers. Please try again.");
