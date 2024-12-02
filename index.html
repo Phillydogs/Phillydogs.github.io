@@ -350,9 +350,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
             underlierSelect.innerHTML = '<option disabled selected>Choose an Underlier</option>'; // Default option
             // Sort underliers alphabetically by name
-
-            const sortedData = data.sort((a, b) => a.name.localeCompare(b.name));
-
+const sortedData = data.sort((a, b) => a.name.localeCompare(b.name));
 
 // Populate the dropdown with sorted data
 sortedData.forEach(underlier => {
@@ -430,22 +428,16 @@ sortedData.forEach(underlier => {
     }
 
     tradeDateInput.addEventListener('change', function () {
-    const tradeDateValue = tradeDateInput.value;
-    if (tradeDateValue) {
-        try {
+        const tradeDateValue = tradeDateInput.value;
+        if (tradeDateValue) {
             const tradeDate = new Date(tradeDateValue);
-            if (isNaN(tradeDate)) throw new Error("Invalid trade date");
             const settlementDate = addBusinessDays(tradeDate, 2);
             settlementDateInput.value = settlementDate.toISOString().split('T')[0];
-        } catch (error) {
-            console.error("Error calculating settlement date:", error);
+        } else {
             settlementDateInput.value = '';
         }
-    } else {
-        settlementDateInput.value = '';
-    }
+    });
 });
-
 
 
     
@@ -553,8 +545,7 @@ sortedData.forEach(underlier => {
                     alert('An error occurred while generating the document.');
                 }
             });
-        });
-        </script>
+    </script>
     
     
     
