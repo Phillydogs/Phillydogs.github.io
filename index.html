@@ -194,7 +194,26 @@
             <label for="final">Final</label>
         </div>
         
-     
+
+
+        <form id="document-form" enctype="multipart/form-data">
+            <div class="date-tile">
+                <div class="date-row">
+                    <div class="date-group">
+                        <label for="issuer">Issuer:</label>
+                        <select id="issuer" name="issuer" required>
+                            <option value="BANK1">BANK1</option>
+                            <option value="BANK2">BANK2</option>
+                            <option value="BANK3">BANK3</option>
+                        </select>
+                     </div>
+                     <div class="date-group">   
+                        <label for="CUSIP">CUSIP:</label>
+                            <input type="text" id="CUSIP" name="CUSIP" maxlength="9" minlength="9" pattern=".{9}" required 
+                                placeholder="Enter CUSIP" title="CUSIP must be exactly 9 characters long.">
+                    </div>  
+                </div>
+            </div>      
         
 
 <!-- Date Tile Section (Moved Inside the Form) -->
@@ -221,24 +240,7 @@
             </div>
         </div>
     </div>
-      
-    
-    
-        <form id="document-form" enctype="multipart/form-data">
-            <div class="input-group">
-                <label for="issuer">Issuer:</label>
-                <select id="issuer" name="issuer" required>
-                    <option value="BANK1">BANK1</option>
-                    <option value="BANK2">BANK2</option>
-                    <option value="BANK3">BANK3</option>
-                </select>
-            </div>
-
-            <div class="input-group">
-                <label for="CUSIP">CUSIP:</label>
-                <input type="text" id="CUSIP" name="CUSIP" maxlength="9" minlength="9" pattern=".{9}" required 
-                       placeholder="Please enter the CUSIP" title="CUSIP must be exactly 9 characters long.">
-            </div>           
+       
            
             <div class="input-group">
                 <label for="underlierName">Underlier Name:</label>
@@ -270,7 +272,7 @@
                     </div>
                     <div class="date-group">
                         <label for="downside_threshold">Downside Threshold:</label>
-                        <input type="text" id="downside_threshold" required>
+                        <input type="text" id="downside_threshold" placeholder="e.g. 70.00%" required>
                         <input type="hidden" id="downside_threshold-hidden" name="downsideThreshold">
                     </div>
                 </div>
