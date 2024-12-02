@@ -254,18 +254,23 @@
             
             
           
-            <div class="input-group">
-                <label for="downside">Downside Protection Type:</label>
-                <select id="downside" name="downside" required>
-                    <option value="hardBuffer">Hard Buffer</option>
-                    <option value="barrier">Barrier</option>
-                </select>
+            <div class="date-tile">
+                <div class="date-row">
+                    <div class="date-group">
+                        <label for="downside">Downside Protection Type:</label>
+                        <select id="downside" name="downside" required>
+                            <option value="hardBuffer">Hard Buffer</option>
+                            <option value="barrier">Barrier</option>
+                        </select>
+                    </div>
+                    <div class="date-group">
+                        <label for="downside_threshold">Downside Threshold:</label>
+                        <input type="text" id="downside_threshold" required>
+                        <input type="hidden" id="downside_threshold-hidden" name="downsideThreshold">
+                    </div>
+                </div>
             </div>
-            <div class="input-group">
-                <label for="downside_threshold">Downside Threshold:</label>
-                <input type="text" id="downside_threshold" required>
-                <input type="hidden" id="downside_threshold-hidden" name="downsideThreshold">
-            </div>
+            
             <div id="notional-container" style="display: none;">
                 <label for="notional">Notional:</label>
                 <input type="text" id="notional" name="notional">
