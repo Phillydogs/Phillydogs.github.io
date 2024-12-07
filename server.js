@@ -23,23 +23,6 @@ require('dotenv').config();
 // CORS configuration (adjusted for troubleshooting; allow everything for now)
 app.use(cors({ origin: "*" }));
 
-// Get the issuer from the request
-const issuer = req.body.issuer;
-
-// Choose the template file based on the issuer
-let templateFileName;
-if (issuer === 'RBC') {
-    templateFileName = 'RBC template.docx';
-} else if (issuer === 'BNS') {
-    templateFileName = 'BNS bofa template.docx';
-} else {
-    templateFileName = 'template.docx'; // fallback if issuer isn't one of the expected values
-}
-
-// Construct the full path to the chosen template
-const templatePath = path.join(__dirname, "templates", templateFileName);
-
-
 // Helper function for formatting dates
 function formatDate(dateString) {
     if (!dateString) return "N/A";
@@ -163,6 +146,30 @@ function cleanNotional(value) {
 
 // Endpoint to handle file generation
 app.post("/generate", upload.none(), (req, res) => {
+        // Get the issuer from the request
+        const issuer = req.body.issuer;
+
+        // Choose the template file based on the issuer
+        let templateFileName;
+        if (issuer === 'RBC') {
+            templateFileName = 'RBC template.docx';
+        } else if (issuer === 'BNS') {
+            templateFileName = 'BNS bofa template.docx';
+        } else {
+            templateFileName = 'template.docx'; // fallback if issuer isn't matched
+        }
+    
+        // Construct the full path to the chosen template
+        const templatePath = path.join(__dirname, "templates", templateFileName);
+    
+        try {
+            const content = fs.readFileSync(templatePath, "binary");
+            // ... rest of the code remains the same
+        } catch (error) {
+            console.error("Error reading template:", error);
+            return res.status(500).send("Error reading template file.");
+        }   
+    
     try {
         // Load the Word document template
         const content = fs.readFileSync(templatePath, "binary");
