@@ -277,12 +277,38 @@
                 </div>
             </div>
             
+            <div class="date-tile">
+                <div class="date-row">
+                    <!-- Prelim EV Inputs -->
+                    <div class="date-group" id="ev-prelim-inputs" style="display: none;">
+                        <label for="ev-low">EV (Low):</label>
+                        <input type="number" id="ev-low" name="ev-low" placeholder="Enter low EV">
+                    </div>
+                    
+                    <div class="date-group" id="ev-prelim-inputs-high" style="display: none;">
+                        <label for="ev-high">EV (High):</label>
+                        <input type="number" id="ev-high" name="ev-high" placeholder="Enter high EV">
+                    </div>
+            
+                    <!-- Final EV Input -->
+                    <div class="date-group" id="ev-final-input" style="display: none;">
+                        <label for="ev-single">EV:</label>
+                        <input type="number" id="ev-single" name="ev-single" placeholder="Enter EV">
+                    </div>
+                </div>
+            </div>
+            
+
+            
             <div id="notional-container" style="display: none;">
-                <label for="notional">Notional:</label>
+                <div class="date-tile">  
+                    <label for="notional">Notional:</label>
                 <input type="text" id="notional" name="notional">
             </div>
+        </div>
             <button type="submit">Generate Document</button>   
         </div>
+
             
 
         </form>
@@ -447,6 +473,44 @@ sortedData.forEach(underlier => {
             // Hide Notional by default
             toggleNotional(false);
     
+
+            // Reference the EV containers
+            const evPrelimInputs = document.getElementById('ev-prelim-inputs');
+            const evFinalInput = document.getElementById('ev-final-input');
+
+            // Function to show/hide EV inputs based on selected view
+            function toggleEV(view) {
+                const evPrelimInputs = document.getElementById('ev-prelim-inputs');
+                const evPrelimInputsHigh = document.getElementById('ev-prelim-inputs-high');
+                const evFinalInput = document.getElementById('ev-final-input');
+                
+                if (view === 'prelim') {
+                    evPrelimInputs.style.display = 'block';
+                    evPrelimInputsHigh.style.display = 'block';
+                    evFinalInput.style.display = 'none';
+                } else if (view === 'final') {
+                    evPrelimInputs.style.display = 'none';
+                    evPrelimInputsHigh.style.display = 'none';
+                    evFinalInput.style.display = 'block';
+                }
+            }
+
+
+            // Add event listeners to the radio buttons (just like for notional)
+            document.getElementById('prelim').addEventListener('change', function() {
+                toggleNotional(false);
+                toggleEV('prelim');
+            });
+
+            document.getElementById('final').addEventListener('change', function() {
+                toggleNotional(true);
+                toggleEV('final');
+            });
+
+            // Since prelim is checked by default, show the prelim EV fields on load
+            toggleEV('prelim');
+
+
             // Auto-fill today's date in hidden doc_date field
             const docDateHidden = document.createElement('input');
             docDateHidden.type = 'hidden';
