@@ -23,7 +23,22 @@ require('dotenv').config();
 // CORS configuration (adjusted for troubleshooting; allow everything for now)
 app.use(cors({ origin: "*" }));
 
-const templatePath = path.join(__dirname, "templates", "template.docx");
+// Get the issuer from the request
+const issuer = req.body.issuer;
+
+// Choose the template file based on the issuer
+let templateFileName;
+if (issuer === 'RBC') {
+    templateFileName = 'RBC template.docx';
+} else if (issuer === 'BNS') {
+    templateFileName = 'BNS bofa template.docx';
+} else {
+    templateFileName = 'template.docx'; // fallback if issuer isn't one of the expected values
+}
+
+// Construct the full path to the chosen template
+const templatePath = path.join(__dirname, "templates", templateFileName);
+
 
 // Helper function for formatting dates
 function formatDate(dateString) {
