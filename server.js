@@ -55,7 +55,7 @@ function selectView(view) {
 
 app.post('/underliers', express.json(), async (req, res) => {
     console.log('Request body:', req.body); // Debugging: Check the request body
-    const { name } = req.body;
+    const { name, legalName } = req.body;
 
     if (!name) {
         console.log('Validation failed: Underlier name is required.');
@@ -64,9 +64,10 @@ app.post('/underliers', express.json(), async (req, res) => {
 
     try {
         const result = await pool.query(
-            'INSERT INTO underliers (name) VALUES ($1) RETURNING *',
-            [name]
+            'INSERT INTO underliers (name, legal_name) VALUES ($1, $2) RETURNING *',
+            [name, legalName]
         );
+        
         console.log('Inserted underlier:', result.rows[0]); // Debugging: Log the saved underlier
         res.status(201).json(result.rows[0]);
     } catch (error) {
@@ -91,7 +92,8 @@ app.get('/underliers', async (req, res) => {
 
 app.put('/underliers/:id', express.json(), async (req, res) => {
     const { id } = req.params;
-    const { name } = req.body;
+    const { name, legalName } = req.body;
+
 
     if (!name) {
         return res.status(400).send("Underlier name is required.");
@@ -99,9 +101,10 @@ app.put('/underliers/:id', express.json(), async (req, res) => {
 
     try {
         const result = await pool.query(
-            "UPDATE underliers SET name = $1 WHERE id = $2 RETURNING *",
-            [name, id]
+            "UPDATE underliers SET name = $1, legal_name = $2 WHERE id = $3 RETURNING *",
+            [name, legalName, id]
         );
+        
 
         if (result.rowCount === 0) {
             return res.status(404).send("Underlier not found.");
