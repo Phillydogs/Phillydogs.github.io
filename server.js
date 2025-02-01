@@ -77,17 +77,20 @@ app.post('/underliers', express.json(), async (req, res) => {
 });
 
 
-app.get('/underliers', async (req, res) => {
+app.get('/underliers/:id', async (req, res) => {
+    const { id } = req.params;
     try {
-        console.log('Fetching all underliers...');
-        const result = await pool.query("SELECT * FROM underliers ORDER BY created_at DESC");
-        console.log('Fetched underliers:', result.rows); // Debugging: Log the fetched data
-        res.json(result.rows);
+        const result = await pool.query("SELECT * FROM underliers WHERE id = $1", [id]);
+        if (result.rowCount === 0) {
+            return res.status(404).send("Underlier not found.");
+        }
+        res.json(result.rows[0]); // Send the underlier details including legal_name
     } catch (error) {
-        console.error("Error fetching underliers:", error);
-        res.status(500).send("Error fetching underliers.");
+        console.error("Error fetching underlier details:", error);
+        res.status(500).send("Error fetching underlier details.");
     }
 });
+
 
 
 app.put('/underliers/:id', express.json(), async (req, res) => {

@@ -230,11 +230,25 @@ async function deleteUnderlier(id) {
             // Attach event listeners to edit and delete buttons
             function attachEventListeners() {
                 document.querySelectorAll('.btn-edit').forEach(button => {
-                    button.addEventListener('click', () => {
+                    button.addEventListener('click', async () => {
                         editUnderlierId = button.getAttribute('data-id');
-                        newUnderlierInput.value = button.getAttribute('data-name');
+
+                        try {
+                            const response = await fetch(`https://structuredgen-2d4826d917be.herokuapp.com/underliers/${editUnderlierId}`);
+                            if (!response.ok) {
+                                throw new Error('Failed to fetch underlier details.');
+                            }
+                            const underlier = await response.json();
+
+                            newUnderlierInput.value = underlier.name;
+                            document.getElementById('legalName').value = underlier.legal_name || ''; // Handle case when legal_name is null
+                        } catch (error) {
+                            console.error('Error fetching underlier details:', error);
+                            alert('Could not load underlier details.');
+                        }
                     });
                 });
+
 
                 document.querySelectorAll('.btn-delete').forEach(button => {
                     button.addEventListener('click', async () => {
