@@ -187,12 +187,12 @@ saveUnderlierBtn.addEventListener('click', async () => {
 
         const method = editUnderlierId ? 'PUT' : 'POST';
 
+        const legalName = document.getElementById('legalName').value.trim(); // Declare legalName before fetch
+
         const response = await fetch(url, {
             method,
             headers: { 'Content-Type': 'application/json' },
-            const legalName = document.getElementById('legalName').value.trim();
-body: JSON.stringify({ name: underlierName, legalName: legalName }),
-
+            body: JSON.stringify({ name: underlierName, legalName: legalName }) // Corrected object format
         });
 
         if (!response.ok) {
