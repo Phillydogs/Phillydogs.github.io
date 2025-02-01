@@ -77,6 +77,18 @@ app.post('/underliers', express.json(), async (req, res) => {
 });
 
 
+app.get('/underliers', async (req, res) => {
+    try {
+        console.log('Fetching all underliers...');
+        const result = await pool.query("SELECT * FROM underliers ORDER BY created_at DESC");
+        console.log('Fetched underliers:', result.rows);
+        res.json(result.rows);
+    } catch (error) {
+        console.error("Error fetching underliers:", error);
+        res.status(500).send("Error fetching underliers.");
+    }
+});
+
 app.get('/underliers/:id', async (req, res) => {
     const { id } = req.params;
     try {
