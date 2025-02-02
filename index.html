@@ -347,8 +347,12 @@
     <script>
 document.addEventListener('DOMContentLoaded', async function () {
     const underlierSelect = document.getElementById('underlierName');
-    const displayField = document.getElementById('displayField'); // This will show the legal name
-    let underliers = []; // Store underliers data
+    const addUnderlierBtn = document.getElementById('addUnderlierBtn');
+    const saveUnderlierBtn = document.getElementById('saveUnderlierBtn');
+    const newUnderlierInput = document.getElementById('newUnderlier');
+    const underlierModal = document.getElementById('underlierModal');
+    const displayField = document.getElementById('displayField'); // This will show legal_name
+    let underliers = []; // Store underliers for later reference
 
     // Function to fetch and populate underliers
     async function fetchUnderliers() {
@@ -360,11 +364,16 @@ document.addEventListener('DOMContentLoaded', async function () {
             }
 
             const data = await response.json();
-            underliers = data; // Store the fetched underliers
+            console.log("Fetched underliers:", data);
 
+            underliers = data; // Store underliers for later reference
             underlierSelect.innerHTML = '<option disabled selected>Choose an Underlier</option>'; // Default option
+            
+            // Sort underliers alphabetically by name
+            const sortedData = data.sort((a, b) => a.name.localeCompare(b.name));
 
-            data.forEach(underlier => {
+            // Populate the dropdown with sorted data
+            sortedData.forEach(underlier => {
                 const option = document.createElement('option');
                 option.value = underlier.name; // Store the underlier name as the value
                 option.textContent = underlier.name;
@@ -383,7 +392,10 @@ document.addEventListener('DOMContentLoaded', async function () {
         const selectedUnderlier = underliers.find(u => u.name === selectedName);
 
         if (selectedUnderlier) {
-            displayField.textContent = selectedUnderlier.legal_name || selectedName; // Use legal_name if available
+            displayField.textContent = selectedUnderlier.legal_name || selectedName; // Correct replacement
+
+            // Also update the hidden input field for underlier name
+            document.getElementById('underlierHidden').value = selectedUnderlier.legal_name || selectedName;
         }
     });
 
@@ -579,10 +591,22 @@ document.addEventListener('DOMContentLoaded', async function () {
                     console.log(`${key}: ${value}`);
                 }
     
-                // Submit form data to the backend
-                const response = await fetch('https://structuredgen-2d4826d917be.herokuapp.com/generate', {
-                    method: 'POST',
-                    body: formData
+                    // Get the selected underlier name
+    const selectedName = document.getElementById('underlierName').value;
+    
+    // Find the legal name from the underliers array
+    const selectedUnderlier = underliers.find(u => u.name === selectedName);
+    
+    // Replace {underlierName} with the legal name
+    if (selectedUnderlier) {
+        formData.set('underlierName', selectedUnderlier.legal_name || selectedName); 
+    }
+
+    console.log("Submitting form data:", Object.fromEntries(formData));
+
+    const response = await fetch('https://structuredgen-2d4826d917be.herokuapp.com/generate', {
+        method: 'POST',
+        body: formData
                 });
     
                 if (response.ok) {
