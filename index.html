@@ -276,7 +276,7 @@
             <!-- Populated dynamically -->
         </select>
     </div>
-    
+
             
             <!-- Modal for Adding Underlier -->
             <div id="underlierModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); border-radius: 8px;">
@@ -347,10 +347,8 @@
     <script>
 document.addEventListener('DOMContentLoaded', async function () {
     const underlierSelect = document.getElementById('underlierName');
-    const addUnderlierBtn = document.getElementById('addUnderlierBtn');
-    const saveUnderlierBtn = document.getElementById('saveUnderlierBtn');
-    const newUnderlierInput = document.getElementById('newUnderlier');
-    const underlierModal = document.getElementById('underlierModal');
+    const displayField = document.getElementById('displayField'); // This will show the legal name
+    let underliers = []; // Store underliers data
 
     // Function to fetch and populate underliers
     async function fetchUnderliers() {
@@ -362,25 +360,32 @@ document.addEventListener('DOMContentLoaded', async function () {
             }
 
             const data = await response.json();
-            console.log("Fetched underliers:", data);
+            underliers = data; // Store the fetched underliers
 
             underlierSelect.innerHTML = '<option disabled selected>Choose an Underlier</option>'; // Default option
-            // Sort underliers alphabetically by name
-const sortedData = data.sort((a, b) => a.name.localeCompare(b.name));
 
-// Populate the dropdown with sorted data
-sortedData.forEach(underlier => {
-    const option = document.createElement('option');
-    option.value = underlier.name;
-    option.textContent = underlier.name;
-    underlierSelect.appendChild(option);
-});
+            data.forEach(underlier => {
+                const option = document.createElement('option');
+                option.value = underlier.name; // Store the underlier name as the value
+                option.textContent = underlier.name;
+                underlierSelect.appendChild(option);
+            });
 
         } catch (error) {
             console.error("Error fetching underliers:", error);
             alert("Error fetching underliers. Please try again.");
         }
     }
+
+    // Event listener for dropdown selection to replace {underlierName} with legal_name
+    underlierSelect.addEventListener('change', () => {
+        const selectedName = underlierSelect.value;
+        const selectedUnderlier = underliers.find(u => u.name === selectedName);
+
+        if (selectedUnderlier) {
+            displayField.textContent = selectedUnderlier.legal_name || selectedName; // Use legal_name if available
+        }
+    });
 
     // Fetch underliers on page load
     await fetchUnderliers();
