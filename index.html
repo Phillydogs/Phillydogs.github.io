@@ -275,6 +275,7 @@
         <select id="underlierName" name="underlierName" required>
             <!-- Populated dynamically -->
         </select>
+        <input type="hidden" id="underlierHidden" name="underlierName">
     </div>
 
             
@@ -386,18 +387,17 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     }
 
-    // Event listener for dropdown selection to replace {underlierName} with legal_name
+    // Event listener for dropdown selection to update the hidden field with the legal name
     underlierSelect.addEventListener('change', () => {
         const selectedName = underlierSelect.value;
         const selectedUnderlier = underliers.find(u => u.name === selectedName);
 
-        if (selectedUnderlier) {
-            displayField.textContent = selectedUnderlier.legal_name || selectedName; // Correct replacement
-
-            // Also update the hidden input field for underlier name
-            document.getElementById('underlierHidden').value = selectedUnderlier.legal_name || selectedName;
-        }
+        // Update the hidden input field with the legal name (or fallback to selectedName)
+        document.getElementById('underlierHidden').value = selectedUnderlier 
+            ? (selectedUnderlier.legal_name || selectedName) 
+            : selectedName;
     });
+
 
     // Fetch underliers on page load
     await fetchUnderliers();
@@ -584,29 +584,27 @@ document.addEventListener('DOMContentLoaded', async function () {
             // Form submission handler with debugging
             document.getElementById('document-form').addEventListener('submit', async function (e) {
                 e.preventDefault();
-    
-                // Log form data for debugging
+
+                // Create a FormData object from the form
                 const formData = new FormData(this);
-                for (let [key, value] of formData.entries()) {
-                    console.log(`${key}: ${value}`);
-                }
-    
-                    // Get the selected underlier name
-    const selectedName = document.getElementById('underlierName').value;
-    
-    // Find the legal name from the underliers array
-    const selectedUnderlier = underliers.find(u => u.name === selectedName);
-    
-    // Replace {underlierName} with the legal name
-    if (selectedUnderlier) {
-        formData.set('underlierName', selectedUnderlier.legal_name || selectedName); 
-    }
-
-    console.log("Submitting form data:", Object.fromEntries(formData));
-
-    const response = await fetch('https://structuredgen-2d4826d917be.herokuapp.com/generate', {
-        method: 'POST',
-        body: formData
+                
+                // Get the selected underlier name from the dropdown
+                const selectedName = document.getElementById('underlierName').value;
+                
+                // Find the corresponding underlier record (including legal_name)
+                const selectedUnderlier = underliers.find(u => u.name === selectedName);
+                
+                // Update the underlierName field with the legal name (fallback to selectedName if not found)
+                formData.set('underlierName', selectedUnderlier 
+                    ? (selectedUnderlier.legal_name || selectedName) 
+                    : selectedName);
+                
+                console.log("Submitting form data:", Object.fromEntries(formData));
+                
+                // Continue with the document generation request
+                const response = await fetch('https://structuredgen-2d4826d917be.herokuapp.com/generate', {
+                    method: 'POST',
+                    body: formData
                 });
     
                 if (response.ok) {
