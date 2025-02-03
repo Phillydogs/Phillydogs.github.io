@@ -31,8 +31,17 @@
         h1 {
             text-align: center;
             color: #333;
+            word-wrap: break-word; /* Ensure long text wraps */
         }
     
+        /* Media query for smaller screens */
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 18px; /* Adjust font size for small screens */
+            }
+        }
+
+
         /* Reduce space below specific divider */
         .section-divider + .input-group {
             margin-top: 10px; /* Reduce unnecessary space */
