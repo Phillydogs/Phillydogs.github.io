@@ -10,15 +10,17 @@
     <style>
         /* General Styles */
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f9fafb;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            flex-direction: column;
-        }
+        font-family: Arial, sans-serif;
+        background-color: #f9fafb;
+        display: flex;
+        flex-direction: column; /* Stack content vertically */
+        padding: 20px 10px; /* Add padding to avoid content being cut off */
+        margin: 0;
+        min-height: 100vh; /* Ensure full height for the body */
+        box-sizing: border-box; /* Include padding in height calculations */
+        overflow-y: auto; /* Allow scrolling on mobile if content exceeds viewport */
+        align-items: center;
+    }
     
         .container {
             background: white;
