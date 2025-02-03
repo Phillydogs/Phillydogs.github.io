@@ -33,8 +33,14 @@
             color: #333;
         }
     
-        .input-group {
-            margin-bottom: 15px;
+        /* Reduce space below specific divider */
+        .section-divider + .input-group {
+            margin-top: 10px; /* Reduce unnecessary space */
+        }
+
+        /* Alternatively, override margin for the specific label */
+        .input-group label[for="underlierName"] {
+            margin-top: 0;
         }
     
         label {
@@ -164,6 +170,13 @@
             display: block;
         }
     
+        .section-divider {
+            border: 0;
+            height: 1px;
+            background: linear-gradient(to right, #d1d5db, transparent);
+            margin: 20px 0;
+        }
+
         .date-group input {
             width: 100%;
             padding: 8px;
@@ -213,6 +226,8 @@
                 </div>
             </div>      
         
+            <hr class="section-divider">
+
             <!-- Date Tile Section (Moved Inside the Form) -->
             <div class="date-tile">
                 <div class="date-row">
@@ -237,6 +252,8 @@
                 </div>
             </div>
            
+            <hr class="section-divider">
+
             <div class="input-group">
                 <!-- Wrap label and the icon in a small flex container so they appear on the same line -->
                 <div style="display: inline-flex; align-items: baseline;">
@@ -270,6 +287,8 @@
                 <button type="button" id="closeModalBtn">Cancel</button>
             </div>
             
+            <hr class="section-divider">
+
             <div class="date-tile">
                 <div class="date-row">
                     <div class="date-group">
@@ -287,6 +306,8 @@
                 </div>
             </div>
             
+            <hr class="section-divider">
+
             <div class="date-tile">
                 <div class="date-row">
                     <!-- Prelim EV Inputs -->
