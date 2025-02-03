@@ -32,15 +32,44 @@
         }
     
         h1 {
-            text-align: center;
-            color: #333;
-            word-wrap: break-word; /* Ensure long text wraps */
+            font-size: 32px; /* Larger size for better visual impact */
+            font-weight: 700; /* Bold for emphasis */
+            text-align: center; /* Center-align for symmetry */
+            color: #2563eb; /* Vibrant blue for modern contrast */
+            background: linear-gradient(90deg, #2563eb, #3b82f6); /* Subtle gradient for a fresh look */
+            -webkit-background-clip: text; /* Clip background to text */
+            -webkit-text-fill-color: transparent; /* Transparent fill for gradient effect */
+            margin: 20px 0; /* Consistent spacing */
+            letter-spacing: 1px; /* Slight spacing for readability */
         }
-    
-        /* Media query for smaller screens */
+
+        /* Add animation for title entry */
+        h1::after {
+            content: "";
+            display: block;
+            margin: 10px auto;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #2563eb, #3b82f6);
+            border-radius: 3px; /* Rounded edges */
+            animation: slideIn 1s ease-in-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                width: 0;
+                opacity: 0;
+            }
+            to {
+                width: 60px;
+                opacity: 1;
+            }
+        }
+
+        /* Responsive adjustments for mobile */
         @media (max-width: 480px) {
             h1 {
-                font-size: 18px; /* Adjust font size for small screens */
+                font-size: 26px; /* Slightly smaller for mobile */
             }
         }
 
