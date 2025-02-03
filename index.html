@@ -177,10 +177,8 @@
     <!-- Use a stable Font Awesome 6 version, e.g. 6.2.x -->
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
-      integrity="sha512-RPOi31a63AIz4+O+COQPbqgk7wopgRIQPTypjL03gB3ZIFb8JhK875nLu8oRoz8aib9P3HQVvuB4z6H7ZABZIg=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
+        referrerpolicy="no-referrer"
     />
 </head>
 <body>
@@ -241,17 +239,21 @@
            
             <div class="input-group">
                 <!-- Wrap label and the icon in a small flex container so they appear on the same line -->
-                <div style="display: flex; align-items: center; justify-content: space-between;">
-                    <label for="underlierName" style="margin-right: 8px;">Underlier Name:</label>
-                    <a href="EditUnderlier.html" 
-                       class="settings-link" 
-                       aria-label="Edit Underliers" 
-                       title="Edit Underliers" 
-                       style="text-decoration: none;">
-                        <!-- Font Awesome 6.x uses 'fa-solid fa-cog' for the cog icon -->
-                        <i class="fa-solid fa-cog" style="font-size: 20px;"></i>
+                <div style="display: inline-flex; align-items: baseline;">
+                    <label for="underlierName" style="margin-right: 8px; font-size: 14px; color: #374151;">
+                      Underlier Name:
+                    </label>
+                    <a href="EditUnderlier.html"
+                       class="settings-link"
+                       aria-label="Edit Underliers"
+                       title="Edit Underliers"
+                       style="display: inline-flex; align-items: baseline; text-decoration: none;">
+                      <i class="fa-solid fa-cog" 
+                         style="font-size: 12px; color: #6b7280; vertical-align: middle;"></i>
                     </a>
-                </div>
+                  </div>
+                  
+                  
                 
                 <!-- The dropdown itself stays the same -->
                 <select id="underlierName" name="underlierName" required>
